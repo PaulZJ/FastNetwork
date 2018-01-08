@@ -1,0 +1,42 @@
+buildscript {
+    dependencies {
+        classpath rootProject.ext.androidPlugin
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
+        testInstrumentationRunner rootProject.ext.testInstrumentationRunner
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile rootProject.ext.supportAppCompat
+    testCompile rootProject.ext.junit
+
+    compile rootProject.ext.rxJava
+    compile rootProject.ext.rxAndroid
+    compile rootProject.ext.okHttp
+    compile rootProject.ext.gson
+}
