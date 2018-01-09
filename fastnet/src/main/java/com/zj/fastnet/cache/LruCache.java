@@ -7,8 +7,11 @@ import java.util.Map;
 
 /**
  * Created by zhangjun on 2018/1/5.
+ *
+ * the basic generic LruCache
+ * K: the cache key
+ * V: the cace value
  */
-
 public class LruCache<K, V> {
     private LinkedHashMap<K, V> map;
     private int maxSize;
@@ -19,6 +22,10 @@ public class LruCache<K, V> {
     private int createCount;
     private int putCount;
 
+    /**
+     * the constructor of LruCache
+     * init a LinkedHashMap with loadFactor = 0.75 (with the capacity is 0.75*maxCapacity, auto expand)
+     * */
     public LruCache(int maxSize) {
         if (maxSize < 0) {
             throw new IllegalArgumentException("Cache maxSize must >= 0");
@@ -27,6 +34,9 @@ public class LruCache<K, V> {
         this.map = new LinkedHashMap<>(0, 0.75f, false);
     }
 
+    /**
+     * resize the max size
+     * */
     public void resize(int maxSize) {
         if (maxSize < 0) {
             throw new IllegalArgumentException("Cache maxSize must >= 0");
@@ -37,6 +47,9 @@ public class LruCache<K, V> {
         trimToSize(maxSize);
     }
 
+    /**
+     * get value V with the key K
+     * */
     public final V get(K key) {
         if (key == null) {
             throw new NullPointerException("key == null");
@@ -78,6 +91,9 @@ public class LruCache<K, V> {
         }
     }
 
+    /**
+     * put value V with key K
+     * */
     public final V put(K key, V value) {
         if (key == null || value == null) {
             throw new NullPointerException("key == null || value == null");
@@ -101,6 +117,9 @@ public class LruCache<K, V> {
         return previous;
     }
 
+    /**
+     * delete entry when map's size bigger than maxSize
+     * */
     public void trimToSize(int maxSize) {
         while (true) {
             K key;
@@ -127,6 +146,9 @@ public class LruCache<K, V> {
         }
     }
 
+    /**
+     * remove the value with key K if K in map
+     * */
     public final V remove(K key) {
         if (key == null) {
             throw new NullPointerException("key == null");
