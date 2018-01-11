@@ -26,7 +26,7 @@ ext{
     gson = 'com.google.code.gson:gson:2.8.2'
 
     javaParser = 'com.github.javaparser:javaparser-core:2.5.1'
-
+    lombok = 'org.projectlombok:lombok:1.16.20'
 }
 
 subprojects { project ->

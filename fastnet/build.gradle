@@ -39,4 +39,5 @@ dependencies {
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.okHttp
     compile rootProject.ext.gson
+    provided rootProject.ext.lombok
 }
