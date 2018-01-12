@@ -7,4 +7,7 @@ package com.zj.fastnet.kernel;
  */
 
 public interface ExecutorSupplier {
+    CommonThreadExecutor executorForNetTask();
+    CommonThreadExecutor executorForImmediateNetTask();
+    MainThreadExecutor executorForMainThreadTask();
 }
