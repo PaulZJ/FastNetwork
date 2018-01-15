@@ -1,13 +1,13 @@
-package com.zj.fastnet.common;
+package com.zj.fastnet.common.consts;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.zj.fastnet.common.RequestType.DOWNLOAD;
-import static com.zj.fastnet.common.RequestType.MULTIPART;
-import static com.zj.fastnet.common.RequestType.SIMPLE;
+import static com.zj.fastnet.common.consts.RequestType.DOWNLOAD;
+import static com.zj.fastnet.common.consts.RequestType.MULTIPART;
+import static com.zj.fastnet.common.consts.RequestType.SIMPLE;
 
 /**
  * Created by zhangjun on 2018/1/14.

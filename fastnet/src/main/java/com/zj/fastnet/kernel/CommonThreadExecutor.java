@@ -5,7 +5,7 @@ import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 
-import com.zj.fastnet.common.RequestPriority;
+import com.zj.fastnet.common.consts.RequestPriority;
 import com.zj.fastnet.process.NetWorkRunnable;
 
 import java.util.concurrent.Future;

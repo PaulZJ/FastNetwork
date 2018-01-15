@@ -1,9 +1,9 @@
 package com.zj.fastnet.process;
 
 import com.zj.fastnet.common.util.ErrorUtils;
-import com.zj.fastnet.common.RequestPriority;
-import com.zj.fastnet.common.RequestType;
-import com.zj.fastnet.common.ResponseType;
+import com.zj.fastnet.common.consts.RequestPriority;
+import com.zj.fastnet.common.consts.RequestType;
+import com.zj.fastnet.common.consts.ResponseType;
 import com.zj.fastnet.common.util.SourceCloseUtils;
 import com.zj.fastnet.error.FastNetError;
 
@@ -12,8 +12,12 @@ import okhttp3.Response;
 
 /**
  * Created by zhangjun on 2018/1/10.
+ *
+ * the Runnable for FastRequest
+ * @param RequestPriority priority  the priority for FastRequest
+ * @param int sequenceNum the index for FastRequest
+ * @param FastRequest the FastRequest
  */
-
 public class NetWorkRunnable implements Runnable {
     @Getter
     private final RequestPriority priority;

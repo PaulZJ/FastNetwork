@@ -3,8 +3,8 @@ package com.zj.fastnet.process;
 import android.net.TrafficStats;
 import android.text.TextUtils;
 
-import com.zj.fastnet.common.Const;
-import com.zj.fastnet.common.Method;
+import com.zj.fastnet.common.consts.Const;
+import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.error.FastNetError;
 
 import java.io.IOException;
@@ -37,6 +37,9 @@ public final class FastNetWorking {
         return mInstance;
     }
 
+    /**
+     * create a default config OkHttpClient
+     * */
     public OkHttpClient getDefaultClient() {
         return new OkHttpClient().newBuilder()
                 .connectTimeout(60, TimeUnit.SECONDS)
@@ -103,6 +106,9 @@ public final class FastNetWorking {
         return okHttpResponse;
     }
 
+    /**
+     * add headers for Request
+     * */
     public void addHeadersToRequestBuilder(Request.Builder builder, FastRequest request) {
         if (!TextUtils.isEmpty(request.getUserAgent())) {
             builder.addHeader(Const.HEADER_KEY_FOR_UA, request.getUserAgent());

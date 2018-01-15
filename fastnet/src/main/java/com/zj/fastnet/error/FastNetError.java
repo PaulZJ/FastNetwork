@@ -1,6 +1,6 @@
 package com.zj.fastnet.error;
 
-import com.zj.fastnet.common.Const;
+import com.zj.fastnet.common.consts.Const;
 
 import lombok.Getter;
 import lombok.Setter;

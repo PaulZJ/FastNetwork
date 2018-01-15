@@ -8,6 +8,12 @@ import okhttp3.Response;
 
 /**
  * Created by zhangjun on 2018/1/14.
+ *
+ * this class means the specific Response for different type of #see FastRequest
+ *
+ * @param T result the target data for FastRequest, e.t: Bitmap, String, JsonObject;
+ * @param FastNetError error the Error Message for failed FastRequest
+ * @param Response okHttpResponse the basic response from OkHttp
  */
 
 public class FastResponse<T> {

@@ -1,6 +1,6 @@
 package com.zj.fastnet.common.util;
 
-import com.zj.fastnet.common.ResponseType;
+import com.zj.fastnet.common.consts.ResponseType;
 import com.zj.fastnet.process.FastRequest;
 
 import okhttp3.Response;

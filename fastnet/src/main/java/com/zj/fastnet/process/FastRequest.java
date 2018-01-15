@@ -1,15 +1,10 @@
 package com.zj.fastnet.process;
 
-import android.graphics.Bitmap;
-
-import com.zj.fastnet.common.Method;
-import com.zj.fastnet.common.RequestType;
-import com.zj.fastnet.common.ResponseType;
+import com.zj.fastnet.common.consts.Method;
+import com.zj.fastnet.common.consts.RequestType;
+import com.zj.fastnet.common.consts.ResponseType;
 import com.zj.fastnet.error.FastNetError;
 import com.zj.fastnet.kernel.Core;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,8 +47,6 @@ public class FastRequest {
 
     private Executor mExecutor = null;
 
-
-
     private HashMap<String, List<String>> mHeadersMap = new HashMap<>();
     private HashMap<String, String> mPathParameterMap = new HashMap<>();
     private HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
@@ -83,6 +76,9 @@ public class FastRequest {
         return  method;
     }
 
+    /**
+     * build Headers for Okhttp with a Map named mHeadersMap
+     * */
     public Headers getHeaders() {
         Headers.Builder builder = new Headers.Builder();
         try {
@@ -104,6 +100,9 @@ public class FastRequest {
         return builder.build();
     }
 
+    /**
+     * generate URL with base url , mPathParameterMap, mQueryParameterMap
+     * */
     public String getUrl() {
         String tempUrl = url;
         for (HashMap.Entry<String, String> entry : mPathParameterMap.entrySet()) {
@@ -125,6 +124,9 @@ public class FastRequest {
         return urlBuilder.build().toString();
     }
 
+    /**
+     * parse basic Okhttp Response to target Response
+     * */
     public FastResponse parseResponse(Response response) {
         switch (responseType) {
             case ResponseType.JSON_OBJECT:
@@ -143,6 +145,9 @@ public class FastRequest {
         return null;
     }
 
+    /**
+     * handle FastResponse
+     * */
     public void deliverResponse(final FastResponse response) {
         try {
             isDelivered = true;
@@ -173,19 +178,31 @@ public class FastRequest {
         }
     }
 
+    /**
+     * handle response for success
+     * */
     private void deliverSuccessResponse(FastResponse response) {
 
     }
 
+    /**
+     * handle response for Error
+     * */
     private void deliverErrorResponse(FastNetError fastNetError) {
 
     }
 
+    /**
+     * shutdown the FastRequest
+     * */
     public void finish() {
 //        destroy();
 //        ANRequestQueue.getInstance().finish(this);
     }
 
+    /**
+     * add ErrorBody for Network Error
+     * */
     public FastNetError parseNetworkError(FastNetError error) {
         try {
             if (error.getResponse() != null && error.getResponse().body() != null && error.getResponse().body()
@@ -199,6 +216,9 @@ public class FastRequest {
         return error;
     }
 
+    /**
+     * handle the basic Response for Okhttp
+     * */
     public void handleOkHttpResponse(final Response response) {
 
     }

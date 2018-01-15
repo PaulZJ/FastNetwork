@@ -1,6 +1,6 @@
 package com.zj.fastnet.common.util;
 
-import com.zj.fastnet.common.Const;
+import com.zj.fastnet.common.consts.Const;
 import com.zj.fastnet.error.FastNetError;
 import com.zj.fastnet.process.FastRequest;
 
