@@ -6,6 +6,7 @@ import com.zj.fastnet.common.consts.RequestType;
 import com.zj.fastnet.common.consts.ResponseType;
 import com.zj.fastnet.common.util.SourceCloseUtils;
 import com.zj.fastnet.error.FastNetError;
+import com.zj.fastnet.kernel.Core;
 
 import lombok.Getter;
 import okhttp3.Response;
@@ -14,9 +15,9 @@ import okhttp3.Response;
  * Created by zhangjun on 2018/1/10.
  *
  * the Runnable for FastRequest
- * @param RequestPriority priority  the priority for FastRequest
- * @param int sequenceNum the index for FastRequest
- * @param FastRequest the FastRequest
+ * @see RequestPriority priority  the priority for FastRequest
+ * @see int sequenceNum the index for FastRequest
+ * @see FastRequest the FastRequest
  */
 public class NetWorkRunnable implements Runnable {
     @Getter
@@ -39,6 +40,7 @@ public class NetWorkRunnable implements Runnable {
                 doSimpleRequest();
                 break;
             case RequestType.DOWNLOAD:
+                doDownloadRequest();
                 break;
             case RequestType.MULTIPART:
                 break;
@@ -80,8 +82,33 @@ public class NetWorkRunnable implements Runnable {
         }
     }
 
-    private void deliverError(final FastRequest request, final FastNetError error) {
+    private void doDownloadRequest() {
+        Response okHttpResponse;
+        try {
+            okHttpResponse = FastNetWorking.getInstance().doDownloadRequest(request);
+            if (null == okHttpResponse) {
+                deliverError(request, ErrorUtils.getErrorForConnection(new FastNetError()));
+                return;
+            }
+            if (okHttpResponse.code() >= 400) {
+                deliverError(request, ErrorUtils.getErrorForServerResponse(new FastNetError(okHttpResponse),request,
+                        okHttpResponse.code()));
+                return;
+            }
+            request.updateDownloadCompletion();
+        }catch (Exception e) {
+            deliverError(request, ErrorUtils.getErrorForConnection(new FastNetError()));
+        }
+    }
 
+    private void deliverError(final FastRequest request, final FastNetError error) {
+        Core.getInstance().getExecutorSupplier().executorForMainThreadTask().execute(new Runnable() {
+            @Override
+            public void run() {
+                request.deliverError(error);
+                request.finish();
+            }
+        });
     }
 
 }

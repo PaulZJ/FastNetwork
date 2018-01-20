@@ -1,6 +1,8 @@
 package com.zj.fastnet.process;
 
 import com.zj.fastnet.common.callback.DataAnalyticsListener;
+import com.zj.fastnet.common.callback.DownloadProgressListener;
+import com.zj.fastnet.common.callback.FastCallBack;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.common.consts.RequestType;
 import com.zj.fastnet.common.consts.ResponseType;
@@ -64,6 +66,18 @@ public class FastRequest {
 
     private Executor mExecutor = null;
 
+    private FastCallBack<Response> okhttpResponseCallback;
+    private FastCallBack<Void> downlaodCompletionCallback;
+    @Setter @Getter
+    private DownloadProgressListener downloadProgressListener;
+    @Setter @Getter
+    private DataAnalyticsListener dataAnalyticsListener;
+    @Setter @Getter
+    private String downloadFilePath;
+    @Setter @Getter
+    private String downloadFileName;
+
+
     private HashMap<String, List<String>> mHeadersMap = new HashMap<>();
     private HashMap<String, String> mPathParameterMap = new HashMap<>();
     private HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
@@ -72,8 +86,6 @@ public class FastRequest {
     private HashMap<String, String> mMultiPartParameterMap = new HashMap<>();
     private HashMap<String, File> mMultiPartFileMap = new HashMap<>();
 
-    @Setter @Getter
-    private DataAnalyticsListener dataAnalyticsListener;
 
     public void setRequestType(@RequestType int requestType) {
         this.requestType = requestType;
@@ -301,9 +313,91 @@ public class FastRequest {
     }
 
     /**
+     * update the state of Completion for the Download Task
+     * */
+    public void updateDownloadCompletion() {
+        isDelivered = true;
+        if (null != downlaodCompletionCallback) {
+            if (!isCancelled) {
+                if (mExecutor != null) {
+                    mExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (null != downlaodCompletionCallback) {
+                                downlaodCompletionCallback.onResponse(null);
+                            }
+                            finish();
+                        }
+                    });
+                }else {
+                    Core.getInstance().getExecutorSupplier().executorForMainThreadTask().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (null != downlaodCompletionCallback) {
+                                downlaodCompletionCallback.onResponse(null);
+                            }
+                            finish();
+                        }
+                    });
+                }
+            }else {
+                deliverError(new FastNetError());
+                finish();
+            }
+        }else {
+            finish();
+        }
+    }
+
+    /**
      * handle the basic Response for Okhttp
      * */
     public void handleOkHttpResponse(final Response response) {
+        isDelivered = true;
+        if (!isCancelled) {
+            if (mExecutor != null) {
+                mExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (null != okhttpResponseCallback) {
+                            okhttpResponseCallback.onResponse(response);
+                        }
+                        finish();
+                    }
+                });
+            }else {
+                Core.getInstance().getExecutorSupplier().executorForMainThreadTask().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (null != okhttpResponseCallback) {
+                            okhttpResponseCallback.onResponse(response);
+                        }
+                        finish();
+                    }
+                });
+            }
+        }else {
+            FastNetError error = new FastNetError();
+            error.setCancellationMessageInError();
+            error.setErrorCode(0);
+            if (null != okhttpResponseCallback) {
+                okhttpResponseCallback.onError(error);
+            }
+            finish();
+        }
+    }
 
+    /**
+     * wrap @see FastNetError with request cancel Error
+     * */
+    public synchronized void deliverError(FastNetError error) {
+        if (!isDelivered) {
+            if (isCancelled) {
+                error.setCancellationMessageInError();
+                error.setErrorCode(0);
+            }
+            deliverErrorResponse(error);
+        }
+        isDelivered = true;
     }
 }

@@ -3,16 +3,19 @@ package com.zj.fastnet.process;
 import android.net.TrafficStats;
 import android.text.TextUtils;
 
+import com.zj.fastnet.common.body.ResponseProgressBody;
 import com.zj.fastnet.common.consts.Const;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.common.util.CommonUtils;
 import com.zj.fastnet.common.util.ConnectionStateManager;
 import com.zj.fastnet.error.FastNetError;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Headers;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -123,6 +126,79 @@ public final class FastNetWorking {
         }
         return okHttpResponse;
     }
+
+    public Response doDownloadRequest(final FastRequest request) throws FastNetError{
+        Request okHttpRequest;
+        final Response okHttpResponse;
+        try {
+            Request.Builder builder = new Request.Builder().url(request.getUrl());
+            addHeadersToRequestBuilder(builder, request);
+            builder = builder.get();
+            if (request.getCacheControl() != null) {
+                builder.cacheControl(request.getCacheControl());
+            }
+            okHttpRequest = builder.build();
+            OkHttpClient okHttpClient;
+            if (request.getOkHttpClient() != null) {
+                okHttpClient = request.getOkHttpClient().newBuilder().cache(this.okHttpClient.cache())
+                        .addNetworkInterceptor(new Interceptor() {
+                            @Override
+                            public Response intercept(Chain chain) throws IOException {
+                                Response originalResponse = chain.proceed(chain.request());
+                                return originalResponse.newBuilder()
+                                        .body(new ResponseProgressBody(originalResponse.body(), request
+                                                .getDownloadProgressListener()))
+                                        .build();
+                            }
+                        }).build();
+            }else {
+                okHttpClient = this.okHttpClient.newBuilder()
+                        .addNetworkInterceptor(new Interceptor() {
+                            @Override
+                            public Response intercept(Chain chain) throws IOException {
+                                Response originalResponse = chain.proceed(chain.request());
+                                return originalResponse.newBuilder()
+                                        .body(new ResponseProgressBody(originalResponse.body(), request
+                                                .getDownloadProgressListener()))
+                                        .build();
+                            }
+                        }).build();
+            }
+            request.setCall(okHttpClient.newCall(okHttpRequest));
+            final long startTime = System.currentTimeMillis();
+            final long startBytes = TrafficStats.getTotalRxBytes();
+            okHttpResponse = request.getCall().execute();
+            CommonUtils.saveFile(okHttpResponse, request.getDownloadFilePath(), request.getDownloadFileName());
+            final long timeTaken = System.currentTimeMillis() - startTime;
+            if (okHttpResponse.cacheResponse() == null) {
+                final long finalBytes = TrafficStats.getTotalRxBytes();
+                final long diffBytes;
+                if (startBytes == TrafficStats.UNSUPPORTED || finalBytes == TrafficStats.UNSUPPORTED) {
+                    diffBytes = okHttpResponse.body().contentLength();
+                }else {
+                    diffBytes = finalBytes - startBytes;
+                }
+                ConnectionStateManager.getInstance().updateBandWidth(diffBytes, timeTaken);
+                CommonUtils.sendAnalytics(request.getDataAnalyticsListener(), timeTaken, -1,
+                        okHttpResponse.body().contentLength(), false);
+            }else if (request.getDataAnalyticsListener() != null) {
+                CommonUtils.sendAnalytics(request.getDataAnalyticsListener(), timeTaken, -1, 0, true);
+            }
+        }catch (IOException e){
+            try {
+                File file = new File(request.getDownloadFilePath() + File.separator + request.getDownloadFileName());
+                if (file.exists()) {
+                    file.delete();
+                }
+            }catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            throw new FastNetError(e);
+        }
+
+        return okHttpResponse;
+    }
+
 
     /**
      * add headers for Request

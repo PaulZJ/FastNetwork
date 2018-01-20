@@ -10,5 +10,6 @@ public class Const {
     public static final String CONNECTION_ERROR = "connectionError";
     public static final String RESPONSE_FROM_SERVER_ERROR = "responseFromServerError";
     public static final String OPTIONS = "OPTIONS";
+    public static final int UPDATE = 0x01;
 
 }
