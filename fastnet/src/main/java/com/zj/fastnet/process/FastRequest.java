@@ -1,11 +1,14 @@
 package com.zj.fastnet.process;
 
+import com.zj.fastnet.common.callback.DataAnalyticsListener;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.common.consts.RequestType;
 import com.zj.fastnet.common.consts.ResponseType;
+import com.zj.fastnet.common.util.CommonUtils;
 import com.zj.fastnet.error.FastNetError;
 import com.zj.fastnet.kernel.Core;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +19,13 @@ import lombok.Getter;
 import lombok.Setter;
 import okhttp3.CacheControl;
 import okhttp3.Call;
+import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.Okio;
 
@@ -27,6 +34,11 @@ import okio.Okio;
  */
 
 public class FastRequest {
+    private static final MediaType JSON_MEDIA_TYPE =
+            MediaType.parse("application/json; charset=utf-8");
+    private static final MediaType MEDIA_TYPE_MARKDOWN =
+            MediaType.parse("text/x-markdown; charset=utf-8");
+
     @Setter @Getter
     private boolean isRunning;
     private boolean isCancelled;
@@ -42,6 +54,11 @@ public class FastRequest {
     private OkHttpClient okHttpClient = null;
     @Setter @Getter
     private Call call;
+    private String applicationJsonString = null;
+    private MediaType customMediaType = null;
+    private String stringBody = null;
+    private File file = null;
+    private byte[] bytes = null;
 
     private @ResponseType String responseType;
 
@@ -50,7 +67,13 @@ public class FastRequest {
     private HashMap<String, List<String>> mHeadersMap = new HashMap<>();
     private HashMap<String, String> mPathParameterMap = new HashMap<>();
     private HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
+    private HashMap<String, String> mBodyParameterMap = new HashMap<>();
+    private HashMap<String, String> mUrlEncodedFormBodyParameterMap = new HashMap<>();
+    private HashMap<String, String> mMultiPartParameterMap = new HashMap<>();
+    private HashMap<String, File> mMultiPartFileMap = new HashMap<>();
 
+    @Setter @Getter
+    private DataAnalyticsListener dataAnalyticsListener;
 
     public void setRequestType(@RequestType int requestType) {
         this.requestType = requestType;
@@ -95,6 +118,67 @@ public class FastRequest {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return builder.build();
+    }
+
+    public RequestBody getRequestBody() {
+        if (applicationJsonString != null) {
+            if (customMediaType != null) {
+                return RequestBody.create(customMediaType, applicationJsonString);
+            }
+            return RequestBody.create(JSON_MEDIA_TYPE, applicationJsonString);
+        }else if (stringBody != null) {
+            if (customMediaType != null) {
+                return RequestBody.create(customMediaType, stringBody);
+            }
+            return RequestBody.create(MEDIA_TYPE_MARKDOWN, stringBody);
+        }else if (file != null) {
+            if (customMediaType != null) {
+                return RequestBody.create(customMediaType, file);
+            }
+            return RequestBody.create(MEDIA_TYPE_MARKDOWN, file);
+        }else if (bytes != null) {
+            if (customMediaType != null) {
+                return RequestBody.create(customMediaType, bytes);
+            }
+            return RequestBody.create(MEDIA_TYPE_MARKDOWN, bytes);
+        }else {
+            FormBody.Builder builder = new FormBody.Builder();
+            try {
+                for (HashMap.Entry<String, String> entry: mBodyParameterMap.entrySet()) {
+                    builder.add(entry.getKey(), entry.getValue());
+                }
+                for (HashMap.Entry<String, String> entry: mUrlEncodedFormBodyParameterMap.entrySet()) {
+                    builder.addEncoded(entry.getKey(), entry.getValue());
+                }
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+            return builder.build();
+        }
+    }
+
+    public RequestBody getMultiPartRequestBody() {
+        MultipartBody.Builder builder = new MultipartBody
+                .Builder()
+                .setType(customMediaType == null ? MultipartBody.FORM: customMediaType);
+        try {
+            for (HashMap.Entry<String, String> entry: mMultiPartParameterMap.entrySet()) {
+                builder.addPart(Headers.of("Content-Disposition",
+                        "form-data; name=\""+ entry.getKey() + "\""),
+                        RequestBody.create(null, entry.getValue()));
+            }
+            for (HashMap.Entry<String, File > entry: mMultiPartFileMap.entrySet()) {
+                String fileName = entry.getValue().getName();
+                RequestBody fileBody = RequestBody.create(MediaType.parse(CommonUtils.getMimeType(fileName)),
+                                        entry.getValue());
+                builder.addPart(Headers.of("Content-Disposition",
+                        "form-data; name\"" + entry.getKey() + "\"; filename=\"" + fileName + "\""),
+                        fileBody);
+            }
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return builder.build();

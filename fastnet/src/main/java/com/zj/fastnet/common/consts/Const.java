@@ -9,5 +9,6 @@ public class Const {
     public static final String REQUEST_CANCELLED_ERROR = "requestCancelledError";
     public static final String CONNECTION_ERROR = "connectionError";
     public static final String RESPONSE_FROM_SERVER_ERROR = "responseFromServerError";
+    public static final String OPTIONS = "OPTIONS";
 
 }
