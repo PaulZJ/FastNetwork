@@ -3,6 +3,7 @@ package com.zj.fastnet.process;
 import com.zj.fastnet.common.callback.DataAnalyticsListener;
 import com.zj.fastnet.common.callback.DownloadProgressListener;
 import com.zj.fastnet.common.callback.FastCallBack;
+import com.zj.fastnet.common.callback.UploadProgressListener;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.common.consts.RequestType;
 import com.zj.fastnet.common.consts.ResponseType;
@@ -70,6 +71,8 @@ public class FastRequest {
     private FastCallBack<Void> downlaodCompletionCallback;
     @Setter @Getter
     private DownloadProgressListener downloadProgressListener;
+    @Setter @Getter
+    private UploadProgressListener uploadProgressListener;
     @Setter @Getter
     private DataAnalyticsListener dataAnalyticsListener;
     @Setter @Getter

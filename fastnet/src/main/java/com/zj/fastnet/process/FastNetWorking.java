@@ -3,6 +3,7 @@ package com.zj.fastnet.process;
 import android.net.TrafficStats;
 import android.text.TextUtils;
 
+import com.zj.fastnet.common.body.RequestProgressBody;
 import com.zj.fastnet.common.body.ResponseProgressBody;
 import com.zj.fastnet.common.consts.Const;
 import com.zj.fastnet.common.consts.Method;
@@ -196,6 +197,50 @@ public final class FastNetWorking {
             throw new FastNetError(e);
         }
 
+        return okHttpResponse;
+    }
+
+    public Response doUploadRequest(FastRequest request) throws FastNetError {
+        Request okHttpRequest;
+        Response okHttpResponse;
+        try {
+            Request.Builder builder = new Request.Builder().url(request.getUrl());
+            addHeadersToRequestBuilder(builder, request);
+            final RequestBody requestBody = request.getMultiPartRequestBody();
+            final long requestBodyLength = requestBody.contentLength();
+            builder = builder.post(new RequestProgressBody(requestBody, request.getUploadProgressListener()));
+            if (request.getCacheControl() != null) {
+                builder.cacheControl(request.getCacheControl());
+            }
+            okHttpRequest = builder.build();
+            if (request.getOkHttpClient() != null) {
+                request.setCall(request.getOkHttpClient()
+                    .newBuilder()
+                    .cache(this.okHttpClient.cache())
+                    .build()
+                    .newCall(okHttpRequest));
+            }else {
+                request.setCall(this.okHttpClient.newCall(okHttpRequest));
+            }
+            final long startTime = System.currentTimeMillis();
+            okHttpResponse = request.getCall().execute();
+            final long timeTaken = System.currentTimeMillis() - startTime;
+            if (request.getDataAnalyticsListener() != null) {
+                if (okHttpResponse.cacheResponse() == null) {
+                    CommonUtils.sendAnalytics(request.getDataAnalyticsListener(), timeTaken, requestBodyLength,
+                            okHttpResponse.body().contentLength(), false);
+                }else {
+                    if (okHttpResponse.networkResponse() == null) {
+                        CommonUtils.sendAnalytics(request.getDataAnalyticsListener(), timeTaken, 0, 0, true);
+                    }else {
+                        CommonUtils.sendAnalytics(request.getDataAnalyticsListener(), timeTaken,
+                                requestBodyLength != 0 ? requestBodyLength : -1, 0,true);
+                    }
+                }
+            }
+        }catch (IOException e) {
+            throw new FastNetError(e);
+        }
         return okHttpResponse;
     }
 

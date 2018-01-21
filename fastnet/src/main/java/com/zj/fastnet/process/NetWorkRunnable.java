@@ -1,5 +1,6 @@
 package com.zj.fastnet.process;
 
+import com.zj.fastnet.common.util.CommonUtils;
 import com.zj.fastnet.common.util.ErrorUtils;
 import com.zj.fastnet.common.consts.RequestPriority;
 import com.zj.fastnet.common.consts.RequestType;
@@ -43,6 +44,7 @@ public class NetWorkRunnable implements Runnable {
                 doDownloadRequest();
                 break;
             case RequestType.MULTIPART:
+                doUploadRequest();
                 break;
         }
         request.setRunning(false);
@@ -98,6 +100,37 @@ public class NetWorkRunnable implements Runnable {
             request.updateDownloadCompletion();
         }catch (Exception e) {
             deliverError(request, ErrorUtils.getErrorForConnection(new FastNetError()));
+        }
+    }
+
+    private void doUploadRequest() {
+        Response okHttpResponse = null;
+        try {
+            okHttpResponse = FastNetWorking.getInstance().doUploadRequest(request);
+            if (null == okHttpResponse) {
+                deliverError(request, ErrorUtils.getErrorForConnection(new FastNetError()));
+                return;
+            }
+            if (request.getResponseType() == ResponseType.OK_HTTP_RESPONSE) {
+                request.handleOkHttpResponse(okHttpResponse);
+            }
+
+            if (okHttpResponse.code() >= 400) {
+                deliverError(request, ErrorUtils.getErrorForServerResponse(new FastNetError(okHttpResponse),
+                        request, okHttpResponse.code()));
+                return;
+            }
+            FastResponse response = request.parseResponse(okHttpResponse);
+            if (!response.isSuccess()) {
+                deliverError(request, response.getError());
+                return;
+            }
+            response.setOkHttpResponse(okHttpResponse);
+            request.deliverResponse(response);
+        }catch (Exception e) {
+            deliverError(request, ErrorUtils.getErrorForConnection(new FastNetError()));
+        }finally {
+            SourceCloseUtils.close(okHttpResponse, request);
         }
     }
 
