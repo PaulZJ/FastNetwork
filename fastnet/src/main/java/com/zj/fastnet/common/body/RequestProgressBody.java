@@ -14,6 +14,7 @@ import okhttp3.RequestBody;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.ForwardingSink;
+import okio.Okio;
 import okio.Sink;
 
 /**
@@ -45,7 +46,11 @@ public class RequestProgressBody extends RequestBody {
 
     @Override
     public void writeTo(BufferedSink sink) throws IOException {
-
+        if (null == bufferedSink) {
+            bufferedSink = Okio.buffer(sink(sink));
+        }
+        requestBody.writeTo(bufferedSink);
+        bufferedSink.flush();
     }
 
     private Sink sink(Sink sink) {
