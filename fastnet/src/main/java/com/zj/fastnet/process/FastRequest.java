@@ -1,17 +1,28 @@
 package com.zj.fastnet.process;
 
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+
 import com.zj.fastnet.common.callback.DataAnalyticsListener;
 import com.zj.fastnet.common.callback.DownloadProgressListener;
 import com.zj.fastnet.common.callback.FastCallBack;
 import com.zj.fastnet.common.callback.UploadProgressListener;
+import com.zj.fastnet.common.consts.Const;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.common.consts.RequestType;
 import com.zj.fastnet.common.consts.ResponseType;
+import com.zj.fastnet.common.convert.ParseManager;
 import com.zj.fastnet.common.util.CommonUtils;
+import com.zj.fastnet.common.util.ErrorUtils;
 import com.zj.fastnet.error.FastNetError;
 import com.zj.fastnet.kernel.Core;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +47,7 @@ import okio.Okio;
  * Created by zhangjun on 2018/1/10.
  */
 
-public class FastRequest {
+public class FastRequest<T> {
     private static final MediaType JSON_MEDIA_TYPE =
             MediaType.parse("application/json; charset=utf-8");
     private static final MediaType MEDIA_TYPE_MARKDOWN =
@@ -62,6 +73,7 @@ public class FastRequest {
     private String stringBody = null;
     private File file = null;
     private byte[] bytes = null;
+    private Type mType = null;
 
     private @ResponseType String responseType;
 
@@ -69,6 +81,8 @@ public class FastRequest {
 
     private FastCallBack<Response> okhttpResponseCallback;
     private FastCallBack<Void> downlaodCompletionCallback;
+    @Setter
+    private FastCallBack<T> commonCallback;
     @Setter @Getter
     private DownloadProgressListener downloadProgressListener;
     @Setter @Getter
@@ -80,6 +94,11 @@ public class FastRequest {
     @Setter @Getter
     private String downloadFileName;
 
+    private static final Object sDecodeLock = new Object();
+    private int bitmapMaxWidth;
+    private int bitmapMaxHeight;
+    private Bitmap.Config decodeConfig;
+    private ImageView.ScaleType imgScaleType;
 
     private HashMap<String, List<String>> mHeadersMap = new HashMap<>();
     private HashMap<String, String> mPathParameterMap = new HashMap<>();
@@ -229,17 +248,48 @@ public class FastRequest {
     public FastResponse parseResponse(Response response) {
         switch (responseType) {
             case ResponseType.JSON_OBJECT:
-                break;
+                try {
+                    JSONObject object = new JSONObject(Okio.buffer(response.body().source()).readUtf8());
+                    return new FastResponse(object);
+                }catch (Exception e) {
+                    return new FastResponse(ErrorUtils.getErrorForParse(new FastNetError()));
+                }
             case ResponseType.JSON_ARRAY:
-                break;
+                try {
+                    JSONArray array = new JSONArray(Okio.buffer(response.body().source()).readUtf8());
+                    return new FastResponse(array);
+                }catch (Exception e) {
+                    return new FastResponse(ErrorUtils.getErrorForParse(new FastNetError()));
+                }
             case ResponseType.STRING:
-                break;
+                try {
+                    return new FastResponse(Okio.buffer(response.body().source()).readUtf8());
+                } catch (IOException e) {
+                    return new FastResponse(ErrorUtils.getErrorForParse(new FastNetError()));
+                }
             case ResponseType.BITMAP:
-                break;
+                synchronized (sDecodeLock) {
+                    try {
+                        return CommonUtils.decodeBitmap(response, bitmapMaxWidth, bitmapMaxHeight,
+                                decodeConfig, imgScaleType);
+                    }catch (Exception e) {
+                        return new FastResponse(ErrorUtils.getErrorForParse(new FastNetError()));
+                    }
+                }
             case ResponseType.PARSED:
-                break;
+                try {
+                    return new FastResponse(ParseManager.getParseFactory()
+                                .responseBodyParser(mType).convert(response.body()));
+                }catch (Exception e) {
+                    return new FastResponse(ErrorUtils.getErrorForParse(new FastNetError()));
+                }
             case ResponseType.PREFETCH:
-                break;
+                try {
+                    Okio.buffer(response.body().source()).skip(Long.MAX_VALUE);
+                    return new FastResponse(Const.PREFETCH);
+                }catch (Exception e) {
+                    return new FastResponse(ErrorUtils.getErrorForParse(new FastNetError()));
+                }
         }
         return null;
     }
