@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -55,6 +56,7 @@ public class FastRequest<T> {
 
     @Setter @Getter
     private boolean isRunning;
+    @Getter
     private boolean isCancelled;
     private boolean isDelivered;
     @Setter @Getter
@@ -74,10 +76,14 @@ public class FastRequest<T> {
     private File file = null;
     private byte[] bytes = null;
     private Type mType = null;
+    @Setter @Getter
+    private Object tag;
 
     private @ResponseType String responseType;
 
     private Executor mExecutor = null;
+    private Future future;
+
 
     private FastCallBack<Response> okhttpResponseCallback;
     private FastCallBack<Void> downlaodCompletionCallback;
@@ -99,6 +105,9 @@ public class FastRequest<T> {
     private int bitmapMaxHeight;
     private Bitmap.Config decodeConfig;
     private ImageView.ScaleType imgScaleType;
+
+    private int mPercentageThresholdForCancelling = 0;
+    private int mProgress;
 
     private HashMap<String, List<String>> mHeadersMap = new HashMap<>();
     private HashMap<String, String> mPathParameterMap = new HashMap<>();
@@ -297,7 +306,7 @@ public class FastRequest<T> {
     /**
      * handle FastResponse
      * */
-    public void deliverResponse(final FastResponse response) {
+    public void deliverResponse(final FastResponse<T> response) {
         try {
             isDelivered = true;
             if (!isCancelled) {
@@ -330,23 +339,56 @@ public class FastRequest<T> {
     /**
      * handle response for success
      * */
-    private void deliverSuccessResponse(FastResponse response) {
-
+    private void deliverSuccessResponse(FastResponse<T> response) {
+        if (commonCallback != null) {
+            commonCallback.onResponse(response.getResult());
+        }
     }
 
     /**
      * handle response for Error
      * */
     private void deliverErrorResponse(FastNetError fastNetError) {
-
+        if (commonCallback != null) {
+            commonCallback.onError(fastNetError);
+        }
     }
 
     /**
      * shutdown the FastRequest
      * */
     public void finish() {
-//        destroy();
-//        ANRequestQueue.getInstance().finish(this);
+        destroy();
+        FastRequestQueue.getInstance().finish(this);
+    }
+
+    public void destroy() {
+        this.commonCallback = null;
+        this.okhttpResponseCallback = null;
+        this.downlaodCompletionCallback = null;
+        this.downloadProgressListener = null;
+        this.uploadProgressListener = null;
+    }
+
+    public void cancel(boolean forceCancel) {
+        try {
+            if (forceCancel || mPercentageThresholdForCancelling == 0
+                    || mProgress < mPercentageThresholdForCancelling) {
+                isCancelled = true;
+                isRunning = false;
+                if (null != call) {
+                    call.cancel();
+                }
+                if (null != future) {
+                    future.cancel(true);
+                }
+                if (!isDelivered) {
+                    deliverError(new FastNetError());
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
