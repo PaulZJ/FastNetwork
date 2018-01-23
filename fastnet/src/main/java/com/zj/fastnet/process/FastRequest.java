@@ -166,6 +166,10 @@ public class FastRequest<T> {
         return builder.build();
     }
 
+    /**
+     * build common requestBody
+     * @return
+     */
     public RequestBody getRequestBody() {
         if (applicationJsonString != null) {
             if (customMediaType != null) {
@@ -203,6 +207,9 @@ public class FastRequest<T> {
         }
     }
 
+    /**
+     * build MultiPart for upload Request
+     */
     public RequestBody getMultiPartRequestBody() {
         MultipartBody.Builder builder = new MultipartBody
                 .Builder()
@@ -362,6 +369,9 @@ public class FastRequest<T> {
         FastRequestQueue.getInstance().finish(this);
     }
 
+    /**
+     * recycling resource
+     * */
     public void destroy() {
         this.commonCallback = null;
         this.okhttpResponseCallback = null;
@@ -370,6 +380,9 @@ public class FastRequest<T> {
         this.uploadProgressListener = null;
     }
 
+    /**
+     * cancel a FastRequest
+     */
     public void cancel(boolean forceCancel) {
         try {
             if (forceCancel || mPercentageThresholdForCancelling == 0

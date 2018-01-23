@@ -4,6 +4,9 @@ import com.zj.fastnet.common.convert.gson.GsonParserFactory;
 
 /**
  * Created by zhangjun on 2018/1/22.
+ *
+ * the parse manager for JsonParse
+ * by default, use Gson for Json parsing
  */
 
 public class ParseManager {

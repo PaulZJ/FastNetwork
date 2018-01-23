@@ -4,8 +4,9 @@ import java.io.Serializable;
 
 /**
  * Created by zhangjun on 2018/1/21.
+ *
+ * the model for download/upload Progress
  */
-
 public class Progress implements Serializable {
 
     public long currentBytes;

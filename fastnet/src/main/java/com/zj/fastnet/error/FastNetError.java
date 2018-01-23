@@ -8,6 +8,8 @@ import okhttp3.Response;
 
 /**
  * Created by zhangjun on 2018/1/14.
+ *
+ * the common Error for FastNetWork
  */
 
 public class FastNetError extends Exception {

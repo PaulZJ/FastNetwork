@@ -24,6 +24,7 @@ import okio.Okio;
  */
 
 public class CommonUtils {
+
     public static String getMimeType(String path) {
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         String contentTypeFor = fileNameMap.getContentTypeFor(path);

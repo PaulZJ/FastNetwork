@@ -4,6 +4,8 @@ import com.zj.fastnet.common.consts.ConnectionQuality;
 
 /**
  * Created by zhangjun on 2018/1/20.
+ *
+ * the callback for network state change
  */
 
 public interface ConnectionQualityChangeListener {

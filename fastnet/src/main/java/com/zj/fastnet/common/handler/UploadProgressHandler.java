@@ -10,6 +10,8 @@ import com.zj.fastnet.common.model.Progress;
 
 /**
  * Created by zhangjun on 2018/1/21.
+ *
+ * the Main Thread Handler to notify upload progress
  */
 
 public class UploadProgressHandler extends Handler {

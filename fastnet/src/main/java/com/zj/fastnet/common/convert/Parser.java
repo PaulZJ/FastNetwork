@@ -9,6 +9,8 @@ import okhttp3.ResponseBody;
 
 /**
  * Created by zhangjun on 2018/1/22.
+ *
+ * the Parsing interface, defining what a Parser does
  */
 
 public interface Parser<F, T> {

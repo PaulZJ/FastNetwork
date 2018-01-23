@@ -19,8 +19,9 @@ import okio.Sink;
 
 /**
  * Created by zhangjun on 2018/1/21.
+ *
+ * the RequestBody recording the bytes that uploaded
  */
-
 public class RequestProgressBody extends RequestBody {
     private final RequestBody requestBody;
     private BufferedSink bufferedSink;

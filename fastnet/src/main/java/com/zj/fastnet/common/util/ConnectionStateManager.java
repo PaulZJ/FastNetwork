@@ -10,6 +10,8 @@ import lombok.Setter;
 
 /**
  * Created by zhangjun on 2018/1/19.
+ *
+ * the manager handling Network State
  */
 
 public class ConnectionStateManager {
