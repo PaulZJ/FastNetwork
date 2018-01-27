@@ -3,6 +3,8 @@ package com.zj.fastnet.process;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
+import com.zj.fastnet.common.builder.FastRequestBuilder;
+import com.zj.fastnet.common.builder.GetRequestBuilder;
 import com.zj.fastnet.common.callback.DataAnalyticsListener;
 import com.zj.fastnet.common.callback.DownloadProgressListener;
 import com.zj.fastnet.common.callback.FastCallBack;
@@ -23,6 +25,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +67,7 @@ public class FastRequest<T> {
     private String userAgent;
     private @RequestType int requestType;
     private @Method int method;
+    @Setter @Getter
     private String url;
     @Setter @Getter
     private CacheControl cacheControl = null;
@@ -82,6 +87,7 @@ public class FastRequest<T> {
     private @ResponseType String responseType;
 
     private Executor mExecutor = null;
+    @Setter
     private Future future;
 
 
@@ -111,12 +117,17 @@ public class FastRequest<T> {
 
     private HashMap<String, List<String>> mHeadersMap = new HashMap<>();
     private HashMap<String, String> mPathParameterMap = new HashMap<>();
+    @Setter
     private HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
     private HashMap<String, String> mBodyParameterMap = new HashMap<>();
     private HashMap<String, String> mUrlEncodedFormBodyParameterMap = new HashMap<>();
     private HashMap<String, String> mMultiPartParameterMap = new HashMap<>();
     private HashMap<String, File> mMultiPartFileMap = new HashMap<>();
 
+    public FastRequest(@Method int method, FastCallBack fastCallBack) {
+        this.method = method;
+        this.commonCallback = fastCallBack;
+    }
 
     public void setRequestType(@RequestType int requestType) {
         this.requestType = requestType;

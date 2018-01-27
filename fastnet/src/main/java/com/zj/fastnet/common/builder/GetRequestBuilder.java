@@ -4,8 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
+import com.zj.fastnet.common.callback.FastCallBack;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.common.consts.RequestPriority;
+import com.zj.fastnet.process.FastRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -182,5 +184,13 @@ public class GetRequestBuilder<T extends GetRequestBuilder> implements FastReque
     public T setUserAgent(String userAgent) {
         this.userAgent = userAgent;
         return (T) this;
+    }
+
+    public <T> FastRequest<T> build(FastCallBack<T> fastCallBack) {
+        FastRequest<T> request = new FastRequest<>(Method.GET, fastCallBack);
+        request.setUrl(this.url);
+        request.setUserAgent(this.userAgent);
+        request.setMQueryParameterMap(queryParameterMap);
+        return request;
     }
 }

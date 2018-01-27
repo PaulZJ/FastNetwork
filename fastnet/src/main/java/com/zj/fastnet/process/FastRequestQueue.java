@@ -1,5 +1,8 @@
 package com.zj.fastnet.process;
 
+import com.zj.fastnet.common.consts.RequestPriority;
+import com.zj.fastnet.kernel.Core;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
@@ -29,6 +32,23 @@ public class FastRequestQueue {
 
     public interface RequestFilter {
         boolean apply(FastRequest request);
+    }
+
+    public FastRequest addRequest(FastRequest request) {
+        try {
+            mCurrentRequests.add(request);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+           request.setFuture(Core.getInstance().getExecutorSupplier()
+                .executorForNetTask().submit(new NetWorkRunnable(RequestPriority.MEDIUM, getSequenceNumber(), request)));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return request;
     }
 
     private void cancel(RequestFilter filter, boolean forceCancel) {
