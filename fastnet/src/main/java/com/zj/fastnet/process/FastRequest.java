@@ -67,7 +67,7 @@ public class FastRequest<T> {
     private String userAgent;
     private @RequestType int requestType;
     private @Method int method;
-    @Setter @Getter
+    @Setter
     private String url;
     @Setter @Getter
     private CacheControl cacheControl = null;
@@ -80,6 +80,7 @@ public class FastRequest<T> {
     private String stringBody = null;
     private File file = null;
     private byte[] bytes = null;
+    @Setter
     private Type mType = null;
     @Setter @Getter
     private Object tag;
@@ -107,7 +108,9 @@ public class FastRequest<T> {
     private String downloadFileName;
 
     private static final Object sDecodeLock = new Object();
+    @Setter
     private int bitmapMaxWidth;
+    @Setter
     private int bitmapMaxHeight;
     private Bitmap.Config decodeConfig;
     private ImageView.ScaleType imgScaleType;
@@ -119,6 +122,7 @@ public class FastRequest<T> {
     private HashMap<String, String> mPathParameterMap = new HashMap<>();
     @Setter
     private HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
+    @Setter
     private HashMap<String, String> mBodyParameterMap = new HashMap<>();
     private HashMap<String, String> mUrlEncodedFormBodyParameterMap = new HashMap<>();
     private HashMap<String, String> mMultiPartParameterMap = new HashMap<>();
@@ -234,7 +238,7 @@ public class FastRequest<T> {
             for (HashMap.Entry<String, File > entry: mMultiPartFileMap.entrySet()) {
                 String fileName = entry.getValue().getName();
                 RequestBody fileBody = RequestBody.create(MediaType.parse(CommonUtils.getMimeType(fileName)),
-                                        entry.getValue());
+                        entry.getValue());
                 builder.addPart(Headers.of("Content-Disposition",
                         "form-data; name\"" + entry.getKey() + "\"; filename=\"" + fileName + "\""),
                         fileBody);
@@ -306,7 +310,7 @@ public class FastRequest<T> {
             case ResponseType.PARSED:
                 try {
                     return new FastResponse(ParseManager.getParseFactory()
-                                .responseBodyParser(mType).convert(response.body()));
+                            .responseBodyParser(mType).convert(response.body()));
                 }catch (Exception e) {
                     return new FastResponse(ErrorUtils.getErrorForParse(new FastNetError()));
                 }

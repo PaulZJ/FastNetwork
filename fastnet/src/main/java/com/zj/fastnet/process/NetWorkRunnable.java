@@ -79,6 +79,7 @@ public class NetWorkRunnable implements Runnable {
             request.deliverResponse(response);
         } catch (FastNetError fastNetError) {
             fastNetError.printStackTrace();
+            deliverError(request, fastNetError);
         }finally {
             SourceCloseUtils.close(okhttpResponse, request);
         }
