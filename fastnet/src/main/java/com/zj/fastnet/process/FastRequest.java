@@ -50,6 +50,8 @@ import okio.Okio;
 
 /**
  * Created by zhangjun on 2018/1/10.
+ *
+ * the enclosured Network Request
  */
 
 public class FastRequest<T> {

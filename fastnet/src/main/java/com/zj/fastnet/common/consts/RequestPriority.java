@@ -2,6 +2,8 @@ package com.zj.fastnet.common.consts;
 
 /**
  * Created by zhangjun on 2018/1/10.
+ *
+ * the enum for FastRequest Request Priority
  */
 
 public enum RequestPriority {

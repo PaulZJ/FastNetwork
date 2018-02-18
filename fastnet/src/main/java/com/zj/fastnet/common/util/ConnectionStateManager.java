@@ -46,6 +46,9 @@ public class ConnectionStateManager {
         return mInstance;
     }
 
+    /**
+     * upload Current BandWidth with sampling data
+     */
     public synchronized void updateBandWidth(long bytes, long timeInMs) {
         if (0 == timeInMs || bytes < 2000 || (bytes) * 1.0 / (timeInMs) * BYTES_TO_BITS < BANDWIDTH_LOWER_BOUND) {
             return;

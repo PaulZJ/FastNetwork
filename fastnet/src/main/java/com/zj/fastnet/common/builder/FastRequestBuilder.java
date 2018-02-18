@@ -10,6 +10,8 @@ import okhttp3.OkHttpClient;
 
 /**
  * Created by zhangjun on 2018/1/15.
+ *
+ * the interface for common RequestBuilder
  */
 
 public interface FastRequestBuilder {

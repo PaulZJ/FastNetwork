@@ -38,6 +38,14 @@ public class DefaultHttpManager {
         return mInstance;
     }
 
+    /**
+     * call for String Data with FastNetwork, without parsing data
+     *
+     * @param method Http Method defined in {@link Method}
+     * @param url the string url for Request
+     * @param params the request params for request
+     * @param fastCallBack the common callback for handling Response
+     * */
     public void callForStringData(@Method int method, String url, Map<String, String> params, FastCallBack<String>
             fastCallBack) {
         switch (method) {
@@ -62,6 +70,14 @@ public class DefaultHttpManager {
         }
     }
 
+    /**
+     * call for Json Data with FastNetwork, parsing Json data with Gson(Default)
+     *
+     * @param method Http Method defined in {@link Method}
+     * @param url the string url for Request
+     * @param params the request params for request
+     * @param fastCallBack the common callback for handling Response
+     * */
     public void callForJsonData(@Method int method, String url, Map<String, String> params, FastCallBack fastCallBack) {
         //get T.class
         Type[] types = fastCallBack.getClass().getGenericInterfaces();
@@ -90,6 +106,14 @@ public class DefaultHttpManager {
         }
     }
 
+    /**
+     * calling Bitmap with FastNetwork
+     *
+     * @param method Http Method defined in {@link Method}
+     * @param url the string url for Request
+     * @param params the request params for request
+     * @param fastCallBack the common callback for handling Response
+     */
     public void callForBitmap(@Method int method, String url, Map<String, String> params, FastCallBack<Bitmap> fastCallBack) {
         switch (method) {
             case Method.GET:
@@ -104,6 +128,16 @@ public class DefaultHttpManager {
         }
     }
 
+    /**
+     * calling Bitmap with specific height and width with FastNetwork
+     *
+     * @param method HTTP Method defined in {@link Method}
+     * @param url the string url for Request
+     * @param params the request params for request
+     * @param maxHeight the specific height
+     * @param maxWidth the specific width
+     * @param fastCallBack the common callback for handing Response
+     */
     public void callForBitmap(@Method int method, String url, Map<String, String> params,int maxHeight, int maxWidth, FastCallBack<Bitmap> fastCallBack) {
         switch (method) {
             case Method.GET:

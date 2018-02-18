@@ -55,6 +55,13 @@ public final class FastNetWorking {
                 .build();
     }
 
+    /**
+     * do common Request
+     *
+     * @param request the FastRequest
+     * @return the okhttp Response
+     * @throws FastNetError
+     */
     public Response doSimpleRequest(FastRequest request) throws FastNetError{
         Request okHttpRequest;
         Response okHttpResponse;
@@ -128,6 +135,12 @@ public final class FastNetWorking {
         return okHttpResponse;
     }
 
+    /**
+     * do download Request
+     * @param request the FastRequest
+     * @return the okhttp Response
+     * @throws FastNetError
+     */
     public Response doDownloadRequest(final FastRequest request) throws FastNetError{
         Request okHttpRequest;
         final Response okHttpResponse;
@@ -200,6 +213,12 @@ public final class FastNetWorking {
         return okHttpResponse;
     }
 
+    /**
+     * do upload Request
+     * @param request the FastRequest
+     * @return the okhttp Response
+     * @throws FastNetError
+     */
     public Response doUploadRequest(FastRequest request) throws FastNetError {
         Request okHttpRequest;
         Response okHttpResponse;

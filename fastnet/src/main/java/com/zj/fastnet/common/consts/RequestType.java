@@ -11,6 +11,8 @@ import static com.zj.fastnet.common.consts.RequestType.SIMPLE;
 
 /**
  * Created by zhangjun on 2018/1/14.
+ *
+ * the interface for RequestType
  */
 @Retention(RetentionPolicy.SOURCE)
 @IntDef({SIMPLE, DOWNLOAD, MULTIPART})

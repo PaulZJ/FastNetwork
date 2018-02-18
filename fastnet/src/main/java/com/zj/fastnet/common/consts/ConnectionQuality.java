@@ -2,6 +2,8 @@ package com.zj.fastnet.common.consts;
 
 /**
  * Created by zhangjun on 2018/1/15.
+ *
+ * the enum for kinds of Connection Quality
  */
 
 public enum ConnectionQuality {

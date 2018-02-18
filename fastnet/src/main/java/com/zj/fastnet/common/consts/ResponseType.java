@@ -2,6 +2,8 @@ package com.zj.fastnet.common.consts;
 
 /**
  * Created by zhangjun on 2018/1/14.
+ *
+ * the interface for ResponseType
  */
 
 public @interface ResponseType {

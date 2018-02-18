@@ -6,6 +6,8 @@ import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by zhangjun on 2018/1/12.
+ *
+ * runnable running on a specific Priority Thread
  */
 
 public class PriorityThreadFactory implements ThreadFactory {

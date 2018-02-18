@@ -15,6 +15,8 @@ import static com.zj.fastnet.common.consts.Method.PUT;
 
 /**
  * Created by zhangjun on 2018/1/14.
+ *
+ * the interface for HTTP Method
  */
 @Retention(RetentionPolicy.SOURCE)
 @IntDef({GET, POST, PUT, DELETE, HEAD, PATCH, OPTIONS})

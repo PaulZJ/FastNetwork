@@ -14,6 +14,8 @@ import okhttp3.OkHttpClient;
 
 /**
  * Created by zhangjun on 2018/1/15.
+ *
+ * the builder for download business request
  */
 
 public class DownloadBuilder<T extends  DownloadBuilder> implements FastRequestBuilder {

@@ -21,6 +21,8 @@ import okhttp3.OkHttpClient;
 
 /**
  * Created by zhangjun on 2018/1/15.
+ *
+ * the Builder for Get HTTP Request
  */
 
 public class GetRequestBuilder<T extends GetRequestBuilder> implements FastRequestBuilder {

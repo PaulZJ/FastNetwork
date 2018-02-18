@@ -8,9 +8,9 @@ import java.util.concurrent.ThreadFactory;
  * Created by zhangjun on 2018/1/12.
  *
  * by default, there are three dispatchers:
- *  netExecutor: executor for common net event
- *  immediateExecuror: executor for high priority net event
- *  mainExecutor: executor for UI Event
+ *  @see DefaultExecutorSupplier#netExecutor: executor for common net event
+ *  @see DefaultExecutorSupplier#immediateExecutor: executor for high priority net event
+ *  @see DefaultExecutorSupplier#mainExecutor: executor for UI Event
  */
 
 public class DefaultExecutorSupplier implements ExecutorSupplier {

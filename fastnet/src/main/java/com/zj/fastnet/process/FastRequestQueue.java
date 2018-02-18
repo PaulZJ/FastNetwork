@@ -11,6 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by zhangjun on 2018/1/22.
+ *
+ * the Queue handling FastRequests
  */
 
 public class FastRequestQueue {
@@ -34,6 +36,11 @@ public class FastRequestQueue {
         boolean apply(FastRequest request);
     }
 
+    /**
+     * add a FastRequest to executor
+     * @param request
+     * @return
+     */
     public FastRequest addRequest(FastRequest request) {
         try {
             mCurrentRequests.add(request);
@@ -51,6 +58,12 @@ public class FastRequestQueue {
         return request;
     }
 
+    /**
+     * cancel a FastRequest specified with RequestFilter
+     *
+     * @param filter
+     * @param forceCancel
+     */
     private void cancel(RequestFilter filter, boolean forceCancel) {
         try {
             for (Iterator<FastRequest> iterator = mCurrentRequests.iterator(); iterator.hasNext();) {
@@ -68,6 +81,11 @@ public class FastRequestQueue {
         }
     }
 
+    /**
+     * cancel all FastRequest
+     *
+     * @param forceCancel
+     */
     public void cancelAll(boolean forceCancel) {
         try {
             for (Iterator<FastRequest> iterator = mCurrentRequests.iterator(); iterator.hasNext();) {
@@ -83,6 +101,11 @@ public class FastRequestQueue {
         }
     }
 
+    /**
+     * cancel FastRequest specified with Tag
+     * @param tag
+     * @param forceCancel
+     */
     public void cancelRequestWithGivenTag(final Object tag, final boolean forceCancel) {
         try {
             if (null == tag) {
@@ -103,6 +126,12 @@ public class FastRequestQueue {
         return mSequenceGenerator.incrementAndGet();
     }
 
+    /**
+     * whether a FastRequest is with a specific Tag
+     * @param request
+     * @param tag
+     * @return
+     */
     private boolean isRequestWithTheGivenTag(FastRequest request, Object tag) {
         if (request.getTag() == null) {
             return false;
@@ -116,6 +145,10 @@ public class FastRequestQueue {
         return request.getTag().equals(tag);
     }
 
+    /**
+     * remove finished FastRequest
+     * @param request
+     */
     public void finish(FastRequest request) {
         try {
             mCurrentRequests.remove(request);

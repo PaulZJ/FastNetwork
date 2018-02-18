@@ -15,6 +15,8 @@ import okhttp3.OkHttpClient;
 
 /**
  * Created by zhangjun on 2018/1/15.
+ *
+ * the builder for multi upload HTTP Request
  */
 
 public class MultiPartBuilder<T extends MultiPartBuilder> implements FastRequestBuilder {
