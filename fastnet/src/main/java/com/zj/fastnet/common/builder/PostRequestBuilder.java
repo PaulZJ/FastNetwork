@@ -4,6 +4,7 @@ import com.zj.fastnet.common.callback.FastCallBack;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.common.consts.RequestPriority;
 import com.zj.fastnet.process.FastRequest;
+import com.zj.fastnet.rx.RxFastRequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -262,6 +263,14 @@ public class PostRequestBuilder<T extends PostRequestBuilder> implements FastReq
 
     public <T> FastRequest<T> build(FastCallBack<T> fastCallBack) {
         FastRequest<T> request = new FastRequest<>(Method.POST, fastCallBack);
+        request.setUrl(this.url);
+        request.setUserAgent(this.userAgent);
+        request.setMBodyParameterMap(this.bodyParameterMap);
+        return request;
+    }
+
+    public RxFastRequest buildWithRx() {
+        RxFastRequest request = new RxFastRequest(Method.POST, null);
         request.setUrl(this.url);
         request.setUserAgent(this.userAgent);
         request.setMBodyParameterMap(this.bodyParameterMap);

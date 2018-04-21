@@ -8,6 +8,7 @@ import com.zj.fastnet.common.callback.FastCallBack;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.common.consts.RequestPriority;
 import com.zj.fastnet.process.FastRequest;
+import com.zj.fastnet.rx.RxFastRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -190,6 +191,14 @@ public class GetRequestBuilder<T extends GetRequestBuilder> implements FastReque
 
     public <T> FastRequest<T> build(FastCallBack<T> fastCallBack) {
         FastRequest<T> request = new FastRequest<>(Method.GET, fastCallBack);
+        request.setUrl(this.url);
+        request.setUserAgent(this.userAgent);
+        request.setMQueryParameterMap(queryParameterMap);
+        return request;
+    }
+
+    public RxFastRequest buildWithRx() {
+        RxFastRequest request = new RxFastRequest(Method.GET, null);
         request.setUrl(this.url);
         request.setUserAgent(this.userAgent);
         request.setMQueryParameterMap(queryParameterMap);
