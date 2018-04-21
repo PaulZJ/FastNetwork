@@ -55,9 +55,9 @@ import okio.Okio;
  */
 
 public class FastRequest<T> {
-    private static final MediaType JSON_MEDIA_TYPE =
+    protected static final MediaType JSON_MEDIA_TYPE =
             MediaType.parse("application/json; charset=utf-8");
-    private static final MediaType MEDIA_TYPE_MARKDOWN =
+    protected static final MediaType MEDIA_TYPE_MARKDOWN =
             MediaType.parse("text/x-markdown; charset=utf-8");
 
     @Setter @Getter
@@ -76,12 +76,12 @@ public class FastRequest<T> {
     @Setter @Getter
     private OkHttpClient okHttpClient = null;
     @Setter @Getter
-    private Call call;
-    private String applicationJsonString = null;
-    private MediaType customMediaType = null;
-    private String stringBody = null;
-    private File file = null;
-    private byte[] bytes = null;
+    protected Call call;
+    protected String applicationJsonString = null;
+    protected MediaType customMediaType = null;
+    protected String stringBody = null;
+    protected File file = null;
+    protected byte[] bytes = null;
     @Setter
     private Type mType = null;
     @Setter @Getter
@@ -103,7 +103,7 @@ public class FastRequest<T> {
     @Setter @Getter
     private UploadProgressListener uploadProgressListener;
     @Setter @Getter
-    private DataAnalyticsListener dataAnalyticsListener;
+    protected DataAnalyticsListener dataAnalyticsListener;
     @Setter @Getter
     private String downloadFilePath;
     @Setter @Getter
@@ -120,15 +120,15 @@ public class FastRequest<T> {
     private int mPercentageThresholdForCancelling = 0;
     private int mProgress;
 
-    private HashMap<String, List<String>> mHeadersMap = new HashMap<>();
-    private HashMap<String, String> mPathParameterMap = new HashMap<>();
+    protected HashMap<String, List<String>> mHeadersMap = new HashMap<>();
+    protected HashMap<String, String> mPathParameterMap = new HashMap<>();
     @Setter
-    private HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
+    protected HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
     @Setter
-    private HashMap<String, String> mBodyParameterMap = new HashMap<>();
-    private HashMap<String, String> mUrlEncodedFormBodyParameterMap = new HashMap<>();
-    private HashMap<String, String> mMultiPartParameterMap = new HashMap<>();
-    private HashMap<String, File> mMultiPartFileMap = new HashMap<>();
+    protected HashMap<String, String> mBodyParameterMap = new HashMap<>();
+    protected HashMap<String, String> mUrlEncodedFormBodyParameterMap = new HashMap<>();
+    protected HashMap<String, String> mMultiPartParameterMap = new HashMap<>();
+    protected HashMap<String, File> mMultiPartFileMap = new HashMap<>();
 
     public FastRequest(@Method int method, FastCallBack fastCallBack) {
         this.method = method;

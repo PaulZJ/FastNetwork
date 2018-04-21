@@ -1,4 +1,4 @@
-package com.zj.fastnet;
+package com.zj.fastnet.rx;
 
 /**
  * Created by zhangjun on 2018/1/5.

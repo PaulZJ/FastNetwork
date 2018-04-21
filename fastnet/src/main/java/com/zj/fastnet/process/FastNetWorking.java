@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import lombok.Getter;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -28,6 +29,7 @@ import okhttp3.Response;
 
 public final class FastNetWorking {
     private static FastNetWorking mInstance;
+    @Getter
     private OkHttpClient okHttpClient;
     private FastNetWorking() {
         okHttpClient = getDefaultClient();
@@ -267,7 +269,7 @@ public final class FastNetWorking {
     /**
      * add headers for Request
      * */
-    public void addHeadersToRequestBuilder(Request.Builder builder, FastRequest request) {
+    public static void addHeadersToRequestBuilder(Request.Builder builder, FastRequest request) {
         if (!TextUtils.isEmpty(request.getUserAgent())) {
             builder.addHeader(Const.HEADER_KEY_FOR_UA, request.getUserAgent());
         }

@@ -15,6 +15,7 @@ public class Const {
     public static final int UPDATE = 0x01;
     public static final String PARSE_ERROR = "parseError";
     public static final String PREFETCH = "prefetch";
+    public static final String SUCCESS = "success";
 
 
 }
