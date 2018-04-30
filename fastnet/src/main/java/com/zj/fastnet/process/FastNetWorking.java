@@ -9,6 +9,8 @@ import com.zj.fastnet.common.consts.Const;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.common.util.CommonUtils;
 import com.zj.fastnet.common.util.ConnectionStateManager;
+import com.zj.fastnet.compat.SSLSocketFactoryCompat;
+import com.zj.fastnet.compat.TrustManager;
 import com.zj.fastnet.error.FastNetError;
 
 import java.io.File;
@@ -54,6 +56,7 @@ public final class FastNetWorking {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
+                .sslSocketFactory(new SSLSocketFactoryCompat(null), new TrustManager())
                 .build();
     }
 
