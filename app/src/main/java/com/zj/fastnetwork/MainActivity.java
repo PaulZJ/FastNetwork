@@ -8,11 +8,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.gson.reflect.TypeToken;
 import com.zj.fastnet.common.callback.FastCallBack;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.error.FastNetError;
 import com.zj.fastnet.manager.DefaultHttpManager;
 import com.zj.fastnet.rx.RxNetwork;
+
+import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -105,20 +108,19 @@ public class MainActivity extends Activity {
                             }
                         });*/
 
-                RxNetwork.getInstance().callForStringData(Method.GET, "http://www.vilogo" +
-                        ".com/wp-content/uploads/64965070201304181125484061603230163_006.jpg", null)
-                        .getBitmapObservable()
+                RxNetwork.getInstance().callForRxData(Method.GET, "https://api.github.com/users/PaulZJ/followers", null)
+                        .getJsonObservable(new TypeToken<ArrayList<GitModel>>(){})
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<Bitmap>() {
+                        .subscribe(new Observer<ArrayList<GitModel>>() {
                             @Override
                             public void onSubscribe(Disposable d) {
 
                             }
 
                             @Override
-                            public void onNext(Bitmap bitmap) {
-                                testImg.setImageBitmap(bitmap);
+                            public void onNext(ArrayList<GitModel> gitModels) {
+                                Log.e("zj test", "data size: "+ gitModels.size());
                             }
 
                             @Override
@@ -131,6 +133,7 @@ public class MainActivity extends Activity {
 
                             }
                         });
+
 
             }
         });

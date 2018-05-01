@@ -36,7 +36,7 @@ public class RxNetwork {
      * @param url the string url for Request
      * @param params the request params for request
      * */
-    public RxFastRequest callForStringData(@Method int method, String url, Map<String, String> params) {
+    public RxFastRequest callForRxData(@Method int method, String url, Map<String, String> params) {
         RxFastRequest request = null;
         switch (method) {
             case Method.GET:
@@ -60,13 +60,13 @@ public class RxNetwork {
         return request;
     }
 
-    /**
+/*    *//**
      * call for Json Data with FastNetwork, parsing Json data with Gson(Default)
      *
      * @param method Http Method defined in {@link Method}
      * @param url the string url for Request
      * @param params the request params for request
-     * */
+     * *//*
     public <T> RxFastRequest callForJsonData(@Method int method, String url, Map<String, String> params, TypeToken<T>
             typeToken) {
         RxFastRequest request = null;
@@ -90,6 +90,6 @@ public class RxNetwork {
         }
 
         return request;
-    }
+    }*/
 
 }
