@@ -1,6 +1,8 @@
 package com.zj.fastnet.rx;
 
 
+import android.graphics.Bitmap;
+
 import com.google.gson.reflect.TypeToken;
 import com.zj.fastnet.common.callback.FastCallBack;
 import com.zj.fastnet.common.consts.RequestType;
@@ -78,6 +80,33 @@ public class RxFastRequest  extends FastRequest<RxFastRequest>{
 
     public <T> Completable getJsonCompletable(TypeToken<T> typeToken) {
         return getJsonObservable(typeToken).ignoreElements();
+    }
+
+    public Observable<Bitmap> getBitmapObservable() {
+        this.setResponseType(ResponseType.BITMAP);
+        if (this.getRequestType() == RequestType.SIMPLE) {
+            return Rx2InternalNetwork.generateSimpleObservable(this);
+        }else if (this.getRequestType() == RequestType.MULTIPART) {
+            return Rx2InternalNetwork.generateMultipartObservable(this);
+        }else {
+            return null;
+        }
+    }
+
+    public Flowable<Bitmap> getBitmapFlowable() {
+        return getBitmapObservable().toFlowable(BackpressureStrategy.LATEST);
+    }
+
+    public Single<Bitmap> getBitmapSingle() {
+        return getBitmapObservable().singleOrError();
+    }
+
+    public Maybe<Bitmap> getBitmapMaybe() {
+        return getBitmapObservable().singleElement();
+    }
+
+    public Completable getBitmapCompletable() {
+        return getBitmapObservable().ignoreElements();
     }
 
 }

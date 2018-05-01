@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
                             }
                         });*/
 
-                RxNetwork.getInstance().callForStringData(Method.GET, "https://api.github" +
+                /*RxNetwork.getInstance().callForStringData(Method.GET, "https://api.github" +
                         ".com/users/PaulZJ/followers", null)
                         .getStringObservable()
                         .subscribeOn(Schedulers.io())
@@ -86,7 +86,52 @@ public class MainActivity extends Activity {
                             public void onComplete() {
                                 Log.e("zj test", "onComplete");
                             }
+                        });*/
+
+           /*     DefaultHttpManager.getInstance().callForBitmap(Method.GET,
+                        "http://www.vilogo.com/wp-content/uploads/64965070201304181125484061603230163_006.jpg"
+                        , null,
+                        DensityUtil.dp2px(MainActivity.this, 100),
+                        DensityUtil.dp2px(MainActivity.this, 100),
+                         new FastCallBack<Bitmap>() {
+                            @Override
+                            public void onResponse(Bitmap response) {
+                                testImg.setImageBitmap(response);
+                            }
+
+                            @Override
+                            public void onError(FastNetError error) {
+
+                            }
+                        });*/
+
+                RxNetwork.getInstance().callForStringData(Method.GET, "http://www.vilogo" +
+                        ".com/wp-content/uploads/64965070201304181125484061603230163_006.jpg", null)
+                        .getBitmapObservable()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<Bitmap>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(Bitmap bitmap) {
+                                testImg.setImageBitmap(bitmap);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
                         });
+
             }
         });
     }
