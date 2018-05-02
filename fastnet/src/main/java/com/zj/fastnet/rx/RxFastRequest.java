@@ -109,4 +109,23 @@ public class RxFastRequest  extends FastRequest<RxFastRequest>{
         return getBitmapObservable().ignoreElements();
     }
 
+    public Observable<String> getDownloadObservable() {
+        return Rx2InternalNetwork.generateDownloadObservable(this);
+    }
+
+    public Flowable<String> getDownloadFlowable() {
+        return getDownloadObservable().toFlowable(BackpressureStrategy.LATEST);
+    }
+
+    public Single<String> getDownloadSingle() {
+        return getDownloadObservable().singleOrError();
+    }
+
+    public Maybe<String> getDownloadMaybe() {
+        return getDownloadObservable().singleElement();
+    }
+
+    public Completable getDownloadCompletable() {
+        return getDownloadObservable().ignoreElements();
+    }
 }

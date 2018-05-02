@@ -95,7 +95,6 @@ public class FastRequest<T> {
 
 
     private FastCallBack<Response> okhttpResponseCallback;
-//    private FastCallBack<Void> downlaodCompletionCallback;
     @Setter
     private FastCallBack<T> commonCallback;
     @Setter @Getter

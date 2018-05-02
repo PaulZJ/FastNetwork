@@ -1,8 +1,8 @@
 package com.zj.fastnet.rx;
 
-import com.google.gson.reflect.TypeToken;
 import com.zj.fastnet.common.builder.GetRequestBuilder;
 import com.zj.fastnet.common.builder.PostRequestBuilder;
+import com.zj.fastnet.common.callback.DownloadProgressListener;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.common.consts.RequestType;
 
@@ -56,6 +56,35 @@ public class RxNetwork {
                 request = postBuilder.buildWithRx();
                 break;
         }
+
+        return request;
+    }
+
+    public RxFastRequest callForRxDownload(@Method int method, String url, Map<String, String> params, String filePath,
+                                           String fileName, DownloadProgressListener listener) {
+        RxFastRequest request = null;
+        switch (method) {
+            case Method.GET:
+                GetRequestBuilder getBuilder = new GetRequestBuilder(url);
+                if (params != null) {
+                    getBuilder.addQueryParameter(params);
+                }
+                request = getBuilder.buildWithRx();
+                request.setRequestType(RequestType.DOWNLOAD);
+                break;
+            case Method.POST:
+                PostRequestBuilder postBuilder = new PostRequestBuilder(url);
+                if (params != null) {
+                    postBuilder.addBodyParameter(params);
+                }
+                request.setRequestType(RequestType.DOWNLOAD);
+                request = postBuilder.buildWithRx();
+                break;
+        }
+
+        request.setDownloadProgressListener(listener);
+        request.setDownloadFilePath(filePath);
+        request.setDownloadFileName(fileName);
 
         return request;
     }

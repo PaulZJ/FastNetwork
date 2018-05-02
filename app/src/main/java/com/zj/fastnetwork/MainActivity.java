@@ -3,6 +3,7 @@ package com.zj.fastnetwork;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.zj.fastnet.common.callback.FastCallBack;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.error.FastNetError;
 import com.zj.fastnet.manager.DefaultHttpManager;
+import com.zj.fastnet.rx.RxFastRequest;
 import com.zj.fastnet.rx.RxNetwork;
 
 import java.util.ArrayList;
@@ -135,7 +137,7 @@ public class MainActivity extends Activity {
                             }
                         });*/
 
-                DefaultHttpManager.getInstance().callForFileDownload(Method.GET,
+            /*    DefaultHttpManager.getInstance().callForFileDownload(Method.GET,
                         "https://nodejs.org/dist/v8.11.1/node-v8.11.1.pkg",null,
                         MainActivity.this.getCacheDir().getAbsolutePath(),"download.zj",
                         new DownloadProgressListener(){
@@ -153,6 +155,40 @@ public class MainActivity extends Activity {
                             @Override
                             public void onError(FastNetError error) {
                                 Log.e("zj test", "response error");
+                            }
+                        });*/
+                RxNetwork.getInstance().callForRxDownload(Method.GET,
+                        "https://nodejs.org/dist/v8.11.1/node-v8.11.1.pkg",null,
+                        Environment.getExternalStorageDirectory().getPath(),"download.zj",
+                        new DownloadProgressListener(){
+                            @Override
+                            public void onProgress(long bytesDownloaded, long totalBytes) {
+                                Log.e("zj test", String.format(" done bytes: %d, total bytes: %d", bytesDownloaded,
+                                        totalBytes));
+                            }
+                        })
+                        .getDownloadObservable()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<String>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                Log.e("zj test", "onSubscribe");
+                            }
+
+                            @Override
+                            public void onNext(String s) {
+                                Log.e("zj test", "onNext: "+s);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e("zj test", "onError");
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                Log.e("zj test", "onComplete");
                             }
                         });
             }
