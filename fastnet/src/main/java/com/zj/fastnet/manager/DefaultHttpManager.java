@@ -4,18 +4,16 @@ import android.graphics.Bitmap;
 
 import com.zj.fastnet.common.builder.GetRequestBuilder;
 import com.zj.fastnet.common.builder.PostRequestBuilder;
+import com.zj.fastnet.common.callback.DownloadProgressListener;
 import com.zj.fastnet.common.callback.FastCallBack;
 import com.zj.fastnet.common.consts.Method;
-import com.zj.fastnet.common.consts.RequestPriority;
+import com.zj.fastnet.common.consts.RequestType;
 import com.zj.fastnet.common.consts.ResponseType;
-import com.zj.fastnet.process.FastNetWorking;
 import com.zj.fastnet.process.FastRequest;
 import com.zj.fastnet.process.FastRequestQueue;
-import com.zj.fastnet.process.NetWorkRunnable;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.BitSet;
 import java.util.Map;
 
 /**
@@ -149,6 +147,36 @@ public class DefaultHttpManager {
                 getRequest.setResponseType(ResponseType.BITMAP);
                 getRequest.setBitmapMaxHeight(maxHeight);
                 getRequest.setBitmapMaxWidth(maxWidth);
+                FastRequestQueue.getInstance().addRequest(getRequest);
+                break;
+        }
+    }
+
+    /**
+     * calling File downloading
+     * @param method HTTP Method defined in {@link Method}
+     * @param url the string url for Request
+     * @param params the request params for Request
+     * @param filePath file path for the download file
+     * @param fileName file name for the download file
+     * @param listener download progress listener
+     * @param fastCallBack common callback for request
+     */
+    public void callForFileDownload(@Method int method, String url, Map<String, String> params, String filePath,
+                                    String fileName,
+                                    DownloadProgressListener listener, FastCallBack<Void>
+                                    fastCallBack) {
+        switch (method) {
+            case Method.GET:
+                GetRequestBuilder getBuilder = new GetRequestBuilder(url);
+                if (params != null) {
+                    getBuilder.addQueryParameter(params);
+                }
+                FastRequest<Void> getRequest = getBuilder.build(fastCallBack);
+                getRequest.setRequestType(RequestType.DOWNLOAD);
+                getRequest.setDownloadProgressListener(listener);
+                getRequest.setDownloadFilePath(filePath);
+                getRequest.setDownloadFileName(fileName);
                 FastRequestQueue.getInstance().addRequest(getRequest);
                 break;
         }

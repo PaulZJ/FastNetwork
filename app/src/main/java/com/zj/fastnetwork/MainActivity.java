@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.google.gson.reflect.TypeToken;
+import com.zj.fastnet.common.callback.DownloadProgressListener;
 import com.zj.fastnet.common.callback.FastCallBack;
 import com.zj.fastnet.common.consts.Method;
 import com.zj.fastnet.error.FastNetError;
@@ -108,7 +109,7 @@ public class MainActivity extends Activity {
                             }
                         });*/
 
-                RxNetwork.getInstance().callForRxData(Method.GET, "https://api.github.com/users/PaulZJ/followers", null)
+                /*RxNetwork.getInstance().callForRxData(Method.GET, "https://api.github.com/users/PaulZJ/followers", null)
                         .getJsonObservable(new TypeToken<ArrayList<GitModel>>(){})
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -132,9 +133,28 @@ public class MainActivity extends Activity {
                             public void onComplete() {
 
                             }
+                        });*/
+
+                DefaultHttpManager.getInstance().callForFileDownload(Method.GET,
+                        "https://nodejs.org/dist/v8.11.1/node-v8.11.1.pkg",null,
+                        MainActivity.this.getCacheDir().getAbsolutePath(),"download.zj",
+                        new DownloadProgressListener(){
+                            @Override
+                            public void onProgress(long bytesDownloaded, long totalBytes) {
+                                Log.e("zj test", String.format(" done bytes: %d, total bytes: %d", bytesDownloaded,
+                                        totalBytes));
+                            }
+                        }, new FastCallBack<Void>(){
+                            @Override
+                            public void onResponse(Void response) {
+                                Log.e("zj test", "response over");
+                            }
+
+                            @Override
+                            public void onError(FastNetError error) {
+                                Log.e("zj test", "response error");
+                            }
                         });
-
-
             }
         });
     }

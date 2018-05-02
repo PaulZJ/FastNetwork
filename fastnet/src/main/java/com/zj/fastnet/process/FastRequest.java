@@ -95,7 +95,7 @@ public class FastRequest<T> {
 
 
     private FastCallBack<Response> okhttpResponseCallback;
-    private FastCallBack<Void> downlaodCompletionCallback;
+//    private FastCallBack<Void> downlaodCompletionCallback;
     @Setter
     private FastCallBack<T> commonCallback;
     @Setter @Getter
@@ -392,7 +392,7 @@ public class FastRequest<T> {
     public void destroy() {
         this.commonCallback = null;
         this.okhttpResponseCallback = null;
-        this.downlaodCompletionCallback = null;
+//        this.downlaodCompletionCallback = null;
         this.downloadProgressListener = null;
         this.uploadProgressListener = null;
     }
@@ -442,14 +442,14 @@ public class FastRequest<T> {
      * */
     public void updateDownloadCompletion() {
         isDelivered = true;
-        if (null != downlaodCompletionCallback) {
+        if (null != commonCallback) {
             if (!isCancelled) {
                 if (mExecutor != null) {
                     mExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
-                            if (null != downlaodCompletionCallback) {
-                                downlaodCompletionCallback.onResponse(null);
+                            if (null != commonCallback) {
+                                commonCallback.onResponse(null);
                             }
                             finish();
                         }
@@ -458,8 +458,8 @@ public class FastRequest<T> {
                     Core.getInstance().getExecutorSupplier().executorForMainThreadTask().execute(new Runnable() {
                         @Override
                         public void run() {
-                            if (null != downlaodCompletionCallback) {
-                                downlaodCompletionCallback.onResponse(null);
+                            if (null != commonCallback) {
+                                commonCallback.onResponse(null);
                             }
                             finish();
                         }
