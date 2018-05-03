@@ -89,36 +89,4 @@ public class RxNetwork {
         return request;
     }
 
-/*    *//**
-     * call for Json Data with FastNetwork, parsing Json data with Gson(Default)
-     *
-     * @param method Http Method defined in {@link Method}
-     * @param url the string url for Request
-     * @param params the request params for request
-     * *//*
-    public <T> RxFastRequest callForJsonData(@Method int method, String url, Map<String, String> params, TypeToken<T>
-            typeToken) {
-        RxFastRequest request = null;
-        switch (method) {
-            case Method.GET:
-                GetRequestBuilder getBuilder = new GetRequestBuilder(url);
-                if (params != null) {
-                    getBuilder.addQueryParameter(params);
-                }
-                request = getBuilder.buildWithRx();
-                request.setRequestType(RequestType.SIMPLE);
-                break;
-            case Method.POST:
-                PostRequestBuilder postBuilder = new PostRequestBuilder(url);
-                if (params != null) {
-                    postBuilder.addBodyParameter(params);
-                }
-                request = postBuilder.buildWithRx();
-                request.setRequestType(RequestType.SIMPLE);
-                break;
-        }
-
-        return request;
-    }*/
-
 }

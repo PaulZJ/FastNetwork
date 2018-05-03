@@ -43,6 +43,12 @@ import static com.zj.fastnet.common.consts.Method.PUT;
 
 public class Rx2InternalNetwork {
 
+    /**
+     * generate Observable for Simple HTTP Request
+     * @param request RxFastRequest
+     * @param <T>
+     * @return
+     */
     public static <T> Observable<T> generateSimpleObservable(RxFastRequest request) {
         Request okhttpRequest;
         Request.Builder builder = new Request.Builder().url(request.getUrl());
@@ -90,6 +96,12 @@ public class Rx2InternalNetwork {
         return new SimpleFastObservable<>(request);
     }
 
+    /**
+     * generate Observable for File Download Http Request
+     * @param request RxFastRequest
+     * @param <T>
+     * @return
+     */
     public static <T> Observable<T> generateDownloadObservable(final RxFastRequest request) {
         Request okHttpRequest;
         Request.Builder builder = new Request.Builder().url(request.getUrl());
@@ -130,6 +142,12 @@ public class Rx2InternalNetwork {
         return new DownloadNetObservable<>(request);
     }
 
+    /**
+     * generate Observable for Multipart HTTP Request
+     * @param request
+     * @param <T>
+     * @return
+     */
     public static <T> Observable<T> generateMultipartObservable(final RxFastRequest request) {
         return new MultipartNetObservable<>(request);
     }

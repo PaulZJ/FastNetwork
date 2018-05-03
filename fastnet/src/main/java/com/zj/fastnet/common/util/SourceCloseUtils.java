@@ -11,6 +11,11 @@ import okhttp3.Response;
 
 public class SourceCloseUtils {
 
+    /**
+     * close Response body
+     * @param response
+     * @param request
+     */
     public static void close(Response response, FastRequest request) {
         if (request.getResponseType() != ResponseType.OK_HTTP_RESPONSE &&
                 response != null && response.body() != null &&

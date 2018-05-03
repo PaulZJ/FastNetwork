@@ -1,10 +1,9 @@
 package com.zj.fastnet.process;
 
-import com.zj.fastnet.common.util.CommonUtils;
-import com.zj.fastnet.common.util.ErrorUtils;
 import com.zj.fastnet.common.consts.RequestPriority;
 import com.zj.fastnet.common.consts.RequestType;
 import com.zj.fastnet.common.consts.ResponseType;
+import com.zj.fastnet.common.util.ErrorUtils;
 import com.zj.fastnet.common.util.SourceCloseUtils;
 import com.zj.fastnet.error.FastNetError;
 import com.zj.fastnet.kernel.Core;

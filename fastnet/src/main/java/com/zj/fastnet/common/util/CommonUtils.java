@@ -25,6 +25,11 @@ import okio.Okio;
 
 public class CommonUtils {
 
+    /**
+     * get content type for spesific path
+     * @param path
+     * @return
+     */
     public static String getMimeType(String path) {
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         String contentTypeFor = fileNameMap.getContentTypeFor(path);
@@ -34,6 +39,14 @@ public class CommonUtils {
         return contentTypeFor;
     }
 
+    /**
+     * send analatics on main thread
+     * @param analyticsListener
+     * @param timeTakenInMills
+     * @param bytesSent
+     * @param bytesReceived
+     * @param isFromCache
+     */
     public static void sendAnalytics(final DataAnalyticsListener analyticsListener, final long timeTakenInMills,
                                      final long bytesSent, final long bytesReceived, final boolean isFromCache) {
         Core.getInstance().getExecutorSupplier().executorForMainThreadTask().execute(new Runnable() {
@@ -88,6 +101,16 @@ public class CommonUtils {
                 new BitmapFactory.Options(), scaleType);
     }
 
+    /**
+     * decode bitmap with resize
+     * @param response
+     * @param maxWidth
+     * @param maxHeight
+     * @param decodeConfig
+     * @param decodeOptions
+     * @param scaleType
+     * @return
+     */
     public static FastResponse<Bitmap> decodeBitmap(Response response, int maxWidth,
                                                   int maxHeight, Bitmap.Config decodeConfig,
                                                   BitmapFactory.Options decodeOptions,
@@ -136,6 +159,15 @@ public class CommonUtils {
         }
     }
 
+    /**
+     * resize dimension
+     * @param maxPrimary
+     * @param maxSecondary
+     * @param actualPrimary
+     * @param actualSecondary
+     * @param scaleType
+     * @return
+     */
     private static int getResizedDimension(int maxPrimary, int maxSecondary,
                                            int actualPrimary, int actualSecondary,
                                            ImageView.ScaleType scaleType) {
@@ -176,6 +208,14 @@ public class CommonUtils {
         return resized;
     }
 
+    /**
+     * get sample rate
+     * @param actualWidth
+     * @param actualHeight
+     * @param desiredWidth
+     * @param desiredHeight
+     * @return
+     */
     public static int findBestSampleSize(int actualWidth, int actualHeight,
                                          int desiredWidth, int desiredHeight) {
         double wr = (double) actualWidth / desiredWidth;

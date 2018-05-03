@@ -22,6 +22,7 @@ import java.util.Map;
 
 public class DefaultHttpManager {
     private static DefaultHttpManager mInstance = null;
+
     private DefaultHttpManager() {
     }
 
@@ -39,11 +40,11 @@ public class DefaultHttpManager {
     /**
      * call for String Data with FastNetwork, without parsing data
      *
-     * @param method Http Method defined in {@link Method}
-     * @param url the string url for Request
-     * @param params the request params for request
+     * @param method       Http Method defined in {@link Method}
+     * @param url          the string url for Request
+     * @param params       the request params for request
      * @param fastCallBack the common callback for handling Response
-     * */
+     */
     public void callForStringData(@Method int method, String url, Map<String, String> params, FastCallBack<String>
             fastCallBack) {
         switch (method) {
@@ -71,11 +72,11 @@ public class DefaultHttpManager {
     /**
      * call for Json Data with FastNetwork, parsing Json data with Gson(Default)
      *
-     * @param method Http Method defined in {@link Method}
-     * @param url the string url for Request
-     * @param params the request params for request
+     * @param method       Http Method defined in {@link Method}
+     * @param url          the string url for Request
+     * @param params       the request params for request
      * @param fastCallBack the common callback for handling Response
-     * */
+     */
     public void callForJsonData(@Method int method, String url, Map<String, String> params, FastCallBack fastCallBack) {
         //get T.class
         Type[] types = fastCallBack.getClass().getGenericInterfaces();
@@ -107,36 +108,28 @@ public class DefaultHttpManager {
     /**
      * calling Bitmap with FastNetwork
      *
-     * @param method Http Method defined in {@link Method}
-     * @param url the string url for Request
-     * @param params the request params for request
+     * @param method       Http Method defined in {@link Method}
+     * @param url          the string url for Request
+     * @param params       the request params for request
      * @param fastCallBack the common callback for handling Response
      */
-    public void callForBitmap(@Method int method, String url, Map<String, String> params, FastCallBack<Bitmap> fastCallBack) {
-        switch (method) {
-            case Method.GET:
-                GetRequestBuilder getBuilder = new GetRequestBuilder(url);
-                if (params != null) {
-                    getBuilder.addQueryParameter(params);
-                }
-                FastRequest<Bitmap> getRequest = getBuilder.build(fastCallBack);
-                getRequest.setResponseType(ResponseType.BITMAP);
-                FastRequestQueue.getInstance().addRequest(getRequest);
-                break;
-        }
+    public void callForBitmap(@Method int method, String url, Map<String, String> params, FastCallBack<Bitmap>
+            fastCallBack) {
+        callForBitmap(method, url, params, 0, 0, fastCallBack);
     }
 
     /**
      * calling Bitmap with specific height and width with FastNetwork
      *
-     * @param method HTTP Method defined in {@link Method}
-     * @param url the string url for Request
-     * @param params the request params for request
-     * @param maxHeight the specific height
-     * @param maxWidth the specific width
+     * @param method       HTTP Method defined in {@link Method}
+     * @param url          the string url for Request
+     * @param params       the request params for request
+     * @param maxHeight    the specific height
+     * @param maxWidth     the specific width
      * @param fastCallBack the common callback for handing Response
      */
-    public void callForBitmap(@Method int method, String url, Map<String, String> params,int maxHeight, int maxWidth, FastCallBack<Bitmap> fastCallBack) {
+    public void callForBitmap(@Method int method, String url, Map<String, String> params, int maxHeight, int
+            maxWidth, FastCallBack<Bitmap> fastCallBack) {
         switch (method) {
             case Method.GET:
                 GetRequestBuilder getBuilder = new GetRequestBuilder(url);
@@ -149,23 +142,35 @@ public class DefaultHttpManager {
                 getRequest.setBitmapMaxWidth(maxWidth);
                 FastRequestQueue.getInstance().addRequest(getRequest);
                 break;
+            case Method.POST:
+                PostRequestBuilder postBuilder = new PostRequestBuilder(url);
+                if (null != params) {
+                    postBuilder.addBodyParameter(params);
+                }
+                FastRequest<Bitmap> postRequest = postBuilder.build(fastCallBack);
+                postRequest.setResponseType(ResponseType.BITMAP);
+                postRequest.setBitmapMaxHeight(maxHeight);
+                postRequest.setBitmapMaxWidth(maxWidth);
+                FastRequestQueue.getInstance().addRequest(postRequest);
+                break;
         }
     }
 
     /**
      * calling File downloading
-     * @param method HTTP Method defined in {@link Method}
-     * @param url the string url for Request
-     * @param params the request params for Request
-     * @param filePath file path for the download file
-     * @param fileName file name for the download file
-     * @param listener download progress listener
+     *
+     * @param method       HTTP Method defined in {@link Method}
+     * @param url          the string url for Request
+     * @param params       the request params for Request
+     * @param filePath     file path for the download file
+     * @param fileName     file name for the download file
+     * @param listener     download progress listener
      * @param fastCallBack common callback for request
      */
     public void callForFileDownload(@Method int method, String url, Map<String, String> params, String filePath,
                                     String fileName,
                                     DownloadProgressListener listener, FastCallBack<Void>
-                                    fastCallBack) {
+                                            fastCallBack) {
         switch (method) {
             case Method.GET:
                 GetRequestBuilder getBuilder = new GetRequestBuilder(url);
@@ -178,6 +183,18 @@ public class DefaultHttpManager {
                 getRequest.setDownloadFilePath(filePath);
                 getRequest.setDownloadFileName(fileName);
                 FastRequestQueue.getInstance().addRequest(getRequest);
+                break;
+            case Method.POST:
+                PostRequestBuilder postBuilder = new PostRequestBuilder(url);
+                if (null != params) {
+                    postBuilder.addBodyParameter(params);
+                }
+                FastRequest<Void> postRequest = postBuilder.build(fastCallBack);
+                postRequest.setRequestType(RequestType.DOWNLOAD);
+                postRequest.setDownloadProgressListener(listener);
+                postRequest.setDownloadFilePath(filePath);
+                postRequest.setDownloadFileName(fileName);
+                FastRequestQueue.getInstance().addRequest(postRequest);
                 break;
         }
     }

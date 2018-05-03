@@ -27,6 +27,10 @@ public class RxFastRequest  extends FastRequest<RxFastRequest>{
         super(method, fastCallBack);
     }
 
+    /**
+     * get Observable for String
+     * @return
+     */
     public Observable<String> getStringObservable() {
         this.setResponseType(ResponseType.STRING);
         if (this.getRequestType() == RequestType.SIMPLE) {
@@ -54,6 +58,12 @@ public class RxFastRequest  extends FastRequest<RxFastRequest>{
         return getStringObservable().ignoreElements();
     }
 
+    /**
+     * get Observable for json model
+     * @param typeToken
+     * @param <T>
+     * @return
+     */
     public <T> Observable<T> getJsonObservable(TypeToken<T> typeToken) {
         this.setMType(typeToken.getType());
         this.setResponseType(ResponseType.PARSED);
@@ -82,6 +92,10 @@ public class RxFastRequest  extends FastRequest<RxFastRequest>{
         return getJsonObservable(typeToken).ignoreElements();
     }
 
+    /**
+     * get Observable for Bitmap
+     * @return
+     */
     public Observable<Bitmap> getBitmapObservable() {
         this.setResponseType(ResponseType.BITMAP);
         if (this.getRequestType() == RequestType.SIMPLE) {
@@ -109,6 +123,10 @@ public class RxFastRequest  extends FastRequest<RxFastRequest>{
         return getBitmapObservable().ignoreElements();
     }
 
+    /**
+     * get Observable for download request
+     * @return
+     */
     public Observable<String> getDownloadObservable() {
         return Rx2InternalNetwork.generateDownloadObservable(this);
     }
