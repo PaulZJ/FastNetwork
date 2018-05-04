@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by zhangjun on 2018/1/22.
- *
+ * <p>
  * the Queue handling FastRequests
  */
 
@@ -38,20 +38,28 @@ public class FastRequestQueue {
 
     /**
      * add a FastRequest to executor
+     *
      * @param request
      * @return
      */
     public FastRequest addRequest(FastRequest request) {
         try {
             mCurrentRequests.add(request);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-           request.setFuture(Core.getInstance().getExecutorSupplier()
-                .executorForNetTask().submit(new NetWorkRunnable(RequestPriority.MEDIUM, getSequenceNumber(), request)));
-        }catch (Exception e) {
+            if (request.isImmediateNetTask()) {
+                request.setFuture(Core.getInstance().getExecutorSupplier()
+                        .executorForImmediateNetTask().submit(new NetWorkRunnable(RequestPriority.MEDIUM,
+                                getSequenceNumber(), request)));
+            } else {
+                request.setFuture(Core.getInstance().getExecutorSupplier()
+                        .executorForNetTask().submit(new NetWorkRunnable(RequestPriority.MEDIUM, getSequenceNumber(),
+                                request)));
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -66,7 +74,7 @@ public class FastRequestQueue {
      */
     private void cancel(RequestFilter filter, boolean forceCancel) {
         try {
-            for (Iterator<FastRequest> iterator = mCurrentRequests.iterator(); iterator.hasNext();) {
+            for (Iterator<FastRequest> iterator = mCurrentRequests.iterator(); iterator.hasNext(); ) {
                 FastRequest request = iterator.next();
                 if (filter.apply(request)) {
                     request.cancel(forceCancel);
@@ -76,7 +84,7 @@ public class FastRequestQueue {
                     }
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -88,7 +96,7 @@ public class FastRequestQueue {
      */
     public void cancelAll(boolean forceCancel) {
         try {
-            for (Iterator<FastRequest> iterator = mCurrentRequests.iterator(); iterator.hasNext();) {
+            for (Iterator<FastRequest> iterator = mCurrentRequests.iterator(); iterator.hasNext(); ) {
                 FastRequest request = iterator.next();
                 request.cancel(forceCancel);
                 if (request.isCancelled()) {
@@ -96,13 +104,14 @@ public class FastRequestQueue {
                     iterator.remove();
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
      * cancel FastRequest specified with Tag
+     *
      * @param tag
      * @param forceCancel
      */
@@ -117,7 +126,7 @@ public class FastRequestQueue {
                     return isRequestWithTheGivenTag(request, tag);
                 }
             }, forceCancel);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -128,6 +137,7 @@ public class FastRequestQueue {
 
     /**
      * whether a FastRequest is with a specific Tag
+     *
      * @param request
      * @param tag
      * @return
@@ -147,6 +157,7 @@ public class FastRequestQueue {
 
     /**
      * remove finished FastRequest
+     *
      * @param request
      */
     public void finish(FastRequest request) {

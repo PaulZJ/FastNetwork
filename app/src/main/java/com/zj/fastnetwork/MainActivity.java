@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
                             }
                         });*/
 
-           /*     DefaultHttpManager.getInstance().callForBitmap(Method.GET,
+                DefaultHttpManager.getInstance().immediate().callForBitmap(Method.GET,
                         "http://www.vilogo.com/wp-content/uploads/64965070201304181125484061603230163_006.jpg"
                         , null,
                         DensityUtil.dp2px(MainActivity.this, 100),
@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
                             public void onError(FastNetError error) {
 
                             }
-                        });*/
+                        });
 
                 /*RxNetwork.getInstance().callForRxData(Method.GET, "https://api.github.com/users/PaulZJ/followers", null)
                         .getJsonObservable(new TypeToken<ArrayList<GitModel>>(){})
@@ -157,7 +157,7 @@ public class MainActivity extends Activity {
                                 Log.e("zj test", "response error");
                             }
                         });*/
-                RxNetwork.getInstance().callForRxDownload(Method.GET,
+              /*  RxNetwork.getInstance().callForRxDownload(Method.GET,
                         "https://nodejs.org/dist/v8.11.1/node-v8.11.1.pkg",null,
                         Environment.getExternalStorageDirectory().getPath(),"download.zj",
                         new DownloadProgressListener(){
@@ -190,7 +190,7 @@ public class MainActivity extends Activity {
                             public void onComplete() {
                                 Log.e("zj test", "onComplete");
                             }
-                        });
+                        });*/
             }
         });
     }

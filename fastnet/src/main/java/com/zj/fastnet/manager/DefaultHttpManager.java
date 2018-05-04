@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class DefaultHttpManager {
     private static DefaultHttpManager mInstance = null;
-
+    private static boolean isImmediateTaskForSingleRequest = false;
     private DefaultHttpManager() {
     }
 
@@ -35,6 +35,15 @@ public class DefaultHttpManager {
             }
         }
         return mInstance;
+    }
+
+    /**
+     * set FastRequst running in immediateNetTask
+     * @return
+     */
+    public DefaultHttpManager immediate() {
+        isImmediateTaskForSingleRequest = true;
+        return this;
     }
 
     /**
@@ -55,6 +64,7 @@ public class DefaultHttpManager {
                 }
                 FastRequest getRequest = getBuilder.build(fastCallBack);
                 getRequest.setResponseType(ResponseType.STRING);
+                getRequest.setImmediateNetTask(isImmediateTaskForSingleRequest);
                 FastRequestQueue.getInstance().addRequest(getRequest);
                 break;
             case Method.POST:
@@ -64,9 +74,11 @@ public class DefaultHttpManager {
                 }
                 FastRequest postRequest = postBuilder.build(fastCallBack);
                 postRequest.setResponseType(ResponseType.STRING);
+                postRequest.setImmediateNetTask(isImmediateTaskForSingleRequest);
                 FastRequestQueue.getInstance().addRequest(postRequest);
                 break;
         }
+        isImmediateTaskForSingleRequest = false;
     }
 
     /**
@@ -90,6 +102,7 @@ public class DefaultHttpManager {
                 FastRequest getRequest = getBuilder.build(fastCallBack);
                 getRequest.setMType(typeParams[0]);
                 getRequest.setResponseType(ResponseType.PARSED);
+                getRequest.setImmediateNetTask(isImmediateTaskForSingleRequest);
                 FastRequestQueue.getInstance().addRequest(getRequest);
                 break;
             case Method.POST:
@@ -100,9 +113,11 @@ public class DefaultHttpManager {
                 FastRequest postRequest = postBuilder.build(fastCallBack);
                 postRequest.setMType(typeParams[0]);
                 postRequest.setResponseType(ResponseType.PARSED);
+                postRequest.setImmediateNetTask(isImmediateTaskForSingleRequest);
                 FastRequestQueue.getInstance().addRequest(postRequest);
                 break;
         }
+        isImmediateTaskForSingleRequest = false;
     }
 
     /**
@@ -138,6 +153,7 @@ public class DefaultHttpManager {
                 }
                 FastRequest<Bitmap> getRequest = getBuilder.build(fastCallBack);
                 getRequest.setResponseType(ResponseType.BITMAP);
+                getRequest.setImmediateNetTask(isImmediateTaskForSingleRequest);
                 getRequest.setBitmapMaxHeight(maxHeight);
                 getRequest.setBitmapMaxWidth(maxWidth);
                 FastRequestQueue.getInstance().addRequest(getRequest);
@@ -149,11 +165,13 @@ public class DefaultHttpManager {
                 }
                 FastRequest<Bitmap> postRequest = postBuilder.build(fastCallBack);
                 postRequest.setResponseType(ResponseType.BITMAP);
+                postRequest.setImmediateNetTask(isImmediateTaskForSingleRequest);
                 postRequest.setBitmapMaxHeight(maxHeight);
                 postRequest.setBitmapMaxWidth(maxWidth);
                 FastRequestQueue.getInstance().addRequest(postRequest);
                 break;
         }
+        isImmediateTaskForSingleRequest = false;
     }
 
     /**
@@ -179,6 +197,7 @@ public class DefaultHttpManager {
                 }
                 FastRequest<Void> getRequest = getBuilder.build(fastCallBack);
                 getRequest.setRequestType(RequestType.DOWNLOAD);
+                getRequest.setImmediateNetTask(isImmediateTaskForSingleRequest);
                 getRequest.setDownloadProgressListener(listener);
                 getRequest.setDownloadFilePath(filePath);
                 getRequest.setDownloadFileName(fileName);
@@ -191,12 +210,14 @@ public class DefaultHttpManager {
                 }
                 FastRequest<Void> postRequest = postBuilder.build(fastCallBack);
                 postRequest.setRequestType(RequestType.DOWNLOAD);
+                postRequest.setImmediateNetTask(isImmediateTaskForSingleRequest);
                 postRequest.setDownloadProgressListener(listener);
                 postRequest.setDownloadFilePath(filePath);
                 postRequest.setDownloadFileName(fileName);
                 FastRequestQueue.getInstance().addRequest(postRequest);
                 break;
         }
+        isImmediateTaskForSingleRequest = false;
     }
 
 }

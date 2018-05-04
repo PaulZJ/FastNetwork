@@ -24,7 +24,7 @@ public class ConnectionStateManager {
     private static final long BANDWIDTH_LOWER_BOUND = 10;
 
     private static ConnectionStateManager mInstance;
-    @Generated
+    @Getter
     private ConnectionQuality currentConnecttionQuality = ConnectionQuality.UNKNOWN;
     private int mCurrentBandWidthForSampling = 0;
     private int mCurrentNumberOfSample = 0;

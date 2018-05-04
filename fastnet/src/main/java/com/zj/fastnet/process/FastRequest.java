@@ -59,6 +59,10 @@ public class FastRequest<T> {
             MediaType.parse("application/json; charset=utf-8");
     protected static final MediaType MEDIA_TYPE_MARKDOWN =
             MediaType.parse("text/x-markdown; charset=utf-8");
+    //TODO: CommonThreadExecutor for immediate NetTask is not accurate, because the num limit for async request in
+    // okhttp for one instance
+    @Getter @Setter
+    private boolean isImmediateNetTask = false;
 
     @Setter @Getter
     private boolean isRunning;
